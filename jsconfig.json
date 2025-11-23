@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "allowUmdGlobalAccess": true,
+        "alwaysStrict": true,
+        "checkJs": true,
+        "module": "esnext",
+        "target": "esnext",
+    },
+    "exclude": [
+        ".venv",
+        "node_modules",
+        "wrangle",
+    ]
+}
