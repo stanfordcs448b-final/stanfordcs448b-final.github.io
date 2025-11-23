@@ -2,6 +2,12 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+#######
+# WRITES DATA TO src/data/
+# EXPECTS DATA IN wrangle/src/
+#######
+
+
 def main():    
     dataTypeOverrides = {
         "Cancelled": "int",

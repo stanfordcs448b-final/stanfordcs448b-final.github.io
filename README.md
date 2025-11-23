@@ -1,10 +1,33 @@
 # CS 448B Final Project
 
+## Getting set up
+
+1. Make sure you have [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+2. Clone the git repo and navigate into it:
+   ```bash
+   git clone git@github.com:scottdmilner/cs448b-final.git
+   cd cs448b-final
+   ```
+3. Install JS packages:
+   ```bash
+   npm install
+   ```
+4. To preview the project in your browser run `npm start` and go to the URL.
+5. To use the wrangling script in `wangle/main.py` make sure you have [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, then run:
+   ```bash
+   cd wrangle
+   uv sync
+   # run the script with
+   python3 wrangle/main.py
+   ```
+
+
+## Project Outline
 
 - Data needed for all visualizations
   - Airport codes and lat-longs
 
-## Vis1
+### Vis1
 
 - Not time-dependent
 - Network view of all the airports
@@ -21,7 +44,7 @@
     - count of each type of delayed flight
 
 
-## Vis2 Delay Propogation
+### Vis2 Delay Propogation
 
 - Sankey chart of delays
 - If previous aircraft was delayed, why was it late?
@@ -45,7 +68,7 @@
 - Simulate?
 
 
-## Vis3 Cause of Delay
+### Vis3 Cause of Delay
 
 - How well do individual airlines recover from (any kind of) delay?
 - Do airlines experience different rates of (carrier) delay?
