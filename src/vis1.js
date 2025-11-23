@@ -1,5 +1,8 @@
 import { airportdata } from "./data.js";
-import { map, projection } from "./util.js";
+import { projection } from "./util.js";
+
+
+const map = d3.select("#container1 #map");
 
 
 export async function plotPoints() {
