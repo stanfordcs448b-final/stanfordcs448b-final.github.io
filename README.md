@@ -81,3 +81,25 @@
 - 2 bar charts (maybe upgrade to violin plot later)
   - 1 for rate of delay
   - 1 for length of delay
+
+
+### Break assignments:
+Isaac:
+- make the .csvs for vis3
+- block out vis1
+
+Scott:
+- make .csvs for vis1
+- block out vis1
+
+For next week:
+- design vis2
+- wrangle vis2
+- output csvs for vis2
+- Add interactivity to vis1
+- Add interactivity to vis2
+- Add interactivity to vis3
+- make each vis look nice
+- add transitions / slideshow
+- add walkthrough stuff
+- make a video for the walkthrough
