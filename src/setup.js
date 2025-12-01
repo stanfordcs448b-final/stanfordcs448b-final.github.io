@@ -1,4 +1,4 @@
-import { usmap } from "./data.js";
+import { usmap, toydata } from "./data.js";
 
 const map = d3.select("#map");
 const canvas = d3.select("#canvas");
@@ -24,20 +24,5 @@ export async function setupMap() {
 }
 
 export async function setupCanvas() {
-    return usmap
-    .then(usmap => {
-        const path = d3.geoPath();
-    
-        canvas.append("path")
-            .datum(topojson.feature(usmap, usmap.objects.nation))
-            .attr("fill", "#ddd")
-            .attr("d", path);
-        
-        canvas.append("path")
-            .datum(topojson.mesh(usmap, usmap.objects.states, (a, b) => a !== b))
-            .attr("fill", "none")
-            .attr("stroke", "white")
-            .attr("stroke-linejoin", "round")
-            .attr("d", path);
-    });
+    return toydata;
 }

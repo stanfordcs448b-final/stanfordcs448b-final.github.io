@@ -1,25 +1,45 @@
-import { airportdata } from "./data.js";
+import { airportdata, toydata } from "./data.js";
 import { projection } from "./util.js";
 
 
 const container = d3.select('#container3')
-const map = d3.select("#container3 #canvas");
+const leftCanvas = d3.select("#leftCanvas");
 
+const color = ['#1459D9', '#daa520'];
+
+function updateData(newData) {
+    console.log(newData);
+
+    // bind data
+    const appending = leftCanvas.selectAll('rect')
+       .data(newData);
+
+    // add new elements
+    appending.enter().append('rect');
+
+    // update existing elements
+    appending.transition()
+        .duration(0)
+        .style("fill", function(d,i){return color[i];})
+        .attr("x", 10)
+        .attr("y", 10)
+        .attr("width",function (d) {return d.y; })//d.y;})
+        .attr("height", 19);
+
+    // remove old elements
+    appending.exit().remove();
+}
 
 export async function plotBars() {
-    map.append("g")
-        .attr("fill", "green")
-        .attr("fill-opacity", 0.5)
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 0.5)
-        .selectAll()
-        .data(await airportdata)
-        .join("circle")
-        .attr("transform", d => {
-            let [pxX, pxY] = projection([Number(d.LONGITUDE), Number(d.LATITUDE)]);
-            return `translate(${pxX},${pxY})`;
-        })
-        .attr("r", _d => 4)
-        .append("title")
-        .text(d => d.AIRPORT);
+    leftCanvas.append("g");
+
+    // generate initial legend
+    updateData(toydata["ds2"]);
+
+    // handle on click event
+    d3.select('#menuDiv')
+    .on('change', function() {
+        let newData = d3.select("#firstDropdown").property('value');
+        updateData(toydata[newData]);
+    });
 }
