@@ -48,32 +48,84 @@ def main():
     )
 
     # flight_df.merge(airport_df, how="right", left_on="OriginAirportID", right_on=["AIRPORT_ID"])
-    print(airport_df)
-    flight_df["OriginAirportName"] = flight_df["OriginAirportID"].map(airport_df["AIRPORT_ID"])
+    # print(airport_df)
+    # flight_df["OriginAirportName"] = flight_df["OriginAirportID"].map(airport_df["AIRPORT_ID"])
 
-    o_flight_df = flight_df[[
-        "FlightDate",
-        "Cancelled",
-        "DepTime", 
-        "AirTime", 
-        "ArrTime", 
-        "OriginAirportID", 
-        "DestAirportID"
-    ]].copy()
-    o_airport_df = airport_df[[
-        # "AIRPORT_ID",
-        "AIRPORT",
-        "DISPLAY_AIRPORT_NAME",
-        "LATITUDE",
-        "LONGITUDE",
-    ]]
-    print(o_flight_df)
+    # o_flight_df = flight_df[[
+    #     "FlightDate",
+    #     "Cancelled",
+    #     "DepTime", 
+    #     "AirTime", 
+    #     "ArrTime", 
+    #     "OriginAirportID", 
+    #     "DestAirportID"
+    # ]].copy()
+    # o_airport_df = airport_df[[
+    #     # "AIRPORT_ID",
+    #     "AIRPORT",
+    #     "DISPLAY_AIRPORT_NAME",
+    #     "LATITUDE",
+    #     "LONGITUDE",
+    # ]]
+    # print(o_flight_df)
 
     # save our output
-    o_flight_df.to_csv(Path(__file__).parents[1] / "src/data/flights.csv", index=False)
-    o_airport_df.to_csv(Path(__file__).parents[1] / "src/data/airports.csv", index=False)
+    # o_flight_df.to_csv(Path(__file__).parents[1] / "src/data/flights.csv", index=False)
+    # o_airport_df.to_csv(Path(__file__).parents[1] / "src/data/airports.csv", index=False)
     
-    
+
+    ## VISUALIZATION 1
+    v1_tot_count = (
+        flight_df
+        .groupby(["OriginAirportID", "DestAirportID"])
+        .size()
+        .to_frame(name="counts")
+    )
+    v1_delay_count = (
+        flight_df
+        [flight_df["DepDelayMinutes"] > 0]
+        .groupby(["OriginAirportID", "DestAirportID"])
+        .size()
+        .to_frame(name="delaycounts")
+    )
+    v1_combined = (
+        v1_tot_count
+        .merge(v1_delay_count, on=["OriginAirportID", "DestAirportID"])
+        .reset_index()
+        .rename(columns={
+            "OriginAirportID": "originId",
+            "DestAirportID": "destId",
+        })
+    )
+
+    v1_combined.to_csv(Path(__file__).parents[1] / "src/data/v1_flights.csv", index=False)
+
+    airport_lookup = (
+        airport_df
+        [
+            (airport_df["AIRPORT_IS_LATEST"] == 1)
+          & (airport_df["AIRPORT_COUNTRY_CODE_ISO"] == "US")
+        ]
+        [[
+            "AIRPORT_ID",
+            "AIRPORT",
+            "DISPLAY_AIRPORT_NAME",
+            "LATITUDE",
+            "LONGITUDE",
+        ]]
+        .rename(columns={
+            "AIRPORT_ID": "id",
+            "AIRPORT": "code",
+            "DISPLAY_AIRPORT_NAME": "dispName",
+            "LATITUDE": "lat",
+            "LONGITUDE": "long",
+        })
+    )
+
+    airport_lookup.to_csv(Path(__file__).parents[1] / "src/data/airport_lookup.csv", index=False)
+
+    print(v1_combined)
+    print(airport_lookup)
     # with pd.option_context('display.max_rows', None):
     #     print(df.dtypes)
 
