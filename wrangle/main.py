@@ -105,6 +105,9 @@ def main():
         [
             (airport_df["AIRPORT_IS_LATEST"] == 1)
           & (airport_df["AIRPORT_COUNTRY_CODE_ISO"] == "US")
+          & (   (airport_df["AIRPORT_ID"].isin(flight_df["OriginAirportID"]))
+              | (airport_df["AIRPORT_ID"].isin(flight_df["DestAirportID"]))
+            )
         ]
         [[
             "AIRPORT_ID",
