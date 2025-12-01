@@ -2,6 +2,8 @@
  * Source data we need to load
  */
 
+import { projection } from "./util.js";
+
 export const usmap = fetch("./states-albers-10m.json")
                     .then(res => res.json());
 
@@ -14,11 +16,14 @@ export const toydata = {
 }
 export const airportdata = d3.csv(
     "../data/airport_lookup.csv", 
-    d => ({
-        id: +d.id,
-        code: d.code,
-        dispName: d.dispName,
-        lat: +d.lat,
-        long: +d.long,
-    })
+    d => {
+        let [pxLong, pxLat] = projection([+d.long, +d.lat])
+        return {
+            id: +d.id,
+            code: d.code,
+            dispName: d.dispName,
+            lat: pxLat,
+            long: pxLong,
+        }
+    }
 );

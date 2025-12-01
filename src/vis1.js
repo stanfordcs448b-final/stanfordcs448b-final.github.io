@@ -1,5 +1,4 @@
 import { airportdata } from "./data.js";
-import { projection } from "./util.js";
 
 
 const map = d3.select("#container1 #map");
@@ -21,16 +20,25 @@ async function plotAirports() {
         .selectAll()
         .data(await airportdata)
         .join("circle")
-        .attr("transform", d => {
-            let [pxX, pxY] = projection([d.long, d.lat]);
-            return `translate(${pxX},${pxY})`;
-        })
+        .attr("transform", d => `translate(${d.long},${d.lat})`)
         .attr("r", _d => 5)
         .append("title")
         .text(d => d.code);
 }
 
+async function plotFlights() {
+    map.append("g")
+        // attrs here
+        .selectAll()
+        .data(await v1_flightdata)
+        .join("path")
+        .attr("d", d => {
+            return "1";
+        })
+}
+
 
 export async function main() {
-    return plotAirports();
+    return plotAirports()
+           .then(plotFlights);
 }
