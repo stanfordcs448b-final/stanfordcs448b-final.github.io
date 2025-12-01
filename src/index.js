@@ -4,7 +4,7 @@ import { plotBars } from "./vis3.js";
 
 
 // vis1
-setupMap()
+setupMap(d3.select("#container1 #map"))
 .then(v1main);
 
 // vis3
