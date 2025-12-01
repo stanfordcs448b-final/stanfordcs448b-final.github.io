@@ -14,7 +14,7 @@
     <div id="container2">
     </div>
     <div id="container3">
-        <h2>See how variables affect delays!</h2>
+        <h2>How does <span>airline</span> affect delays?</h2>
         <div id="canvasDiv">
             <svg id="leftCanvas" width="400" height="610" viewbox="0 0 975 610">
             </svg>
@@ -23,13 +23,16 @@
         </div>
         <div id="menuDiv" width="100" height="610">
             <select id="firstDropdown">
-                <option value="ds1">data1</option>
-                <option value="ds2" selected="selected">data2</option> 
-                <option value="ds3">data3</option>
+                <option value="ds1">Airline</option>
+                <option value="ds2" selected="selected">Time of Day</option> 
+                <option value="ds3">Month</option>
+                <option value="ds4">Airport</option>
             </select>
-            <select id="secondDropdown">
-                <option value="">Select an option</option>
-            </select>
+            <datalist id="suggestions">
+                <option>Delta</option>
+                <option>Blue</option>
+            </datalist>
+            <input type="text" autoComplete="on" list="suggestions"/> 
         </div>
     </div>
 </body>
