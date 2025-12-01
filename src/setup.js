@@ -6,14 +6,15 @@ const canvas = d3.select("#canvas");
 export async function setupMap(svgEl) {
     return usmap
     .then(usmap => {
+        const bggroup = svgEl.append("g")
         const path = d3.geoPath();
     
-        svgEl.append("path")
+        bggroup.append("path")
             .datum(topojson.feature(usmap, usmap.objects.nation))
             .attr("fill", "#ddd")
             .attr("d", path);
         
-        svgEl.append("path")
+        bggroup.append("path")
             .datum(topojson.mesh(usmap, usmap.objects.states, (a, b) => a !== b))
             .attr("fill", "none")
             .attr("stroke", "white")
