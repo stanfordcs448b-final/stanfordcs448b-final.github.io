@@ -27,13 +27,20 @@ async function plotAirports() {
 }
 
 async function plotFlights() {
+    let airport_lookup = {};
+    airportdata.then(data => data.forEach(
+        row => airport_lookup[row.id] = {latpx: row.latpx, longpx: row.longpx}
+    ))
     map.append("g")
-        // attrs here
+        .attr("stroke", "#ddd")
+        .attr("stroke-width", 0.4)
         .selectAll()
         .data(await v1_flightdata)
         .join("path")
         .attr("d", d => {
-            return "1";
+            let oport = airport_lookup[d.originId];
+            let dport = airport_lookup[d.destId];
+            return `M ${oport.longpx} ${oport.latpx} L ${dport.longpx} ${dport.latpx}`;
         })
 }
 
