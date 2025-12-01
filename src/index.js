@@ -4,8 +4,8 @@ import { plotBars } from "./vis3.js";
 
 
 // vis1
-//setupMap()
-//.then(plotPoints);
+setupMap()
+.then(plotPoints);
 
 // vis3
 setupCanvas()
