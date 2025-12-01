@@ -12,7 +12,7 @@ const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
 }));
 
 
-export async function plotPoints() {
+async function plotAirports() {
     map.append("g")
         .attr("fill", "brown")
         .attr("fill-opacity", 0.5)
@@ -28,4 +28,9 @@ export async function plotPoints() {
         .attr("r", _d => 5)
         .append("title")
         .text(d => d.code);
+}
+
+
+export async function main() {
+    return plotAirports();
 }
