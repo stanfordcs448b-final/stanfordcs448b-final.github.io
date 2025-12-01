@@ -4,6 +4,13 @@ import { projection } from "./util.js";
 
 const map = d3.select("#container1 #map");
 
+const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
+    originId: +row.originId,
+    destId: +row.destId,
+    counts: +row.counts,
+    delaycounts: +row.delaycounts,
+}));
+
 
 export async function plotPoints() {
     map.append("g")
@@ -15,10 +22,10 @@ export async function plotPoints() {
         .data(await airportdata)
         .join("circle")
         .attr("transform", d => {
-            let [pxX, pxY] = projection([Number(d.LONGITUDE), Number(d.LATITUDE)]);
+            let [pxX, pxY] = projection([d.long, d.lat]);
             return `translate(${pxX},${pxY})`;
         })
-        .attr("r", _d => 4)
+        .attr("r", _d => 5)
         .append("title")
-        .text(d => d.AIRPORT);
+        .text(d => d.code);
 }
