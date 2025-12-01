@@ -20,7 +20,7 @@ async function plotAirports() {
         .selectAll()
         .data(await airportdata)
         .join("circle")
-        .attr("transform", d => `translate(${d.long},${d.lat})`)
+        .attr("transform", d => `translate(${d.longpx},${d.latpx})`)
         .attr("r", _d => 5)
         .append("title")
         .text(d => d.code);

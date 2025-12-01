@@ -22,8 +22,8 @@ export const airportdata = d3.csv(
             id: +d.id,
             code: d.code,
             dispName: d.dispName,
-            lat: pxLat,
-            long: pxLong,
+            latpx: pxLat,
+            longpx: pxLong,
         }
     }
 );
