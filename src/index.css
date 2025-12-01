@@ -3,3 +3,14 @@
     height: auto;
     height: intrinsic;
 }
+
+.container3 {
+  display: flex; /* Makes the container a flex container */
+  gap: 10px; /* Adds space between the flex items */
+  /* Optional: align-items: center; for vertical alignment */
+  /* Optional: justify-content: space-around; for horizontal distribution */
+}
+
+.canvasDiv, .menuDiv {
+    padding: 10px
+}
