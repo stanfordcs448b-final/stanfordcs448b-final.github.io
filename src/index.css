@@ -14,3 +14,14 @@
 .canvasDiv, .menuDiv {
     padding: 10px
 }
+
+.hoverdata text {
+  fill: black;
+  font-size: 1.0em;
+}
+
+.hoverdata rect {
+  rx: 4px;
+  ry: 4px;
+  fill: #eee;
+}
