@@ -14,3 +14,27 @@
 .canvasDiv, .menuDiv {
     padding: 10px
 }
+
+.hoverdata text {
+  fill: black;
+  font-size: 1.0em;
+}
+
+.hoverdata rect {
+  rx: 4px;
+  ry: 4px;
+  fill: #eee;
+}
+
+.airport {
+  fill: brown;
+  fill-opacity: 0.5;
+  stroke: white;
+  stroke-width: 0.5;
+  z-index: 80;
+}
+.connections {
+  stroke: #444;
+  stroke-width: 1.5;
+  fill: none;
+}
