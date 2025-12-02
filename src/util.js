@@ -14,3 +14,5 @@ export const projection = function(coords) {
     // fallback if coords not in composite projection
     return xform_geoAlbersUsa(coords) ?? xform_geoAlbers(coords);
 }
+
+export const redGreen = d3.interpolateLab("darkgreen", "orangered");
