@@ -1,7 +1,32 @@
-#map {
-    width: 100%;
+#container1 {
+  overflow: hidden;
+  position: relative;
+}
+
+#container1 svg {
+    width: 80%;
     height: auto;
     height: intrinsic;
+}
+
+#container1 .sidebar {
+  background-color: lightgray;
+  float: inline-end;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20%;
+}
+
+.sidebar #routes {
+  overflow-y: auto;
+  height: 50%;
+}
+
+.sidebar .inlinebar {
+  display: inline-block;
+  height: 1em;
 }
 
 .container3 {

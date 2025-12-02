@@ -15,4 +15,4 @@ export const projection = function(coords) {
     return xform_geoAlbersUsa(coords) ?? xform_geoAlbers(coords);
 }
 
-export const redGreen = d3.interpolateLab("darkgreen", "orangered");
+export const redBlue = d3.interpolateLab("#67a9cf", "#ef8a62");

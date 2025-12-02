@@ -1,8 +1,9 @@
 import { airportdata } from "./data.js";
-import { redGreen } from "./util.js";
+import { redBlue } from "./util.js";
 
 
 const map = d3.select("#container1 #map");
+const sidebar = d3.select("#container1 .sidebar")
 
 const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
     originId: +row.originId,
@@ -12,10 +13,12 @@ const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
 }));
 
 
+/** @returns {Promise<Record<number, {code: number, dispName: string, latpx: number, longpx: number}>>} */
 async function buildLookup() {
     return airportdata.then(data => data.reduce((acc, row) => {
         acc[row.id] = ({
             code: row.code,
+            dispName: row.dispName,
             latpx: row.latpx, 
             longpx: row.longpx,
         });
@@ -47,7 +50,7 @@ let airportDOMIndex = {};
  * @param {boolean} value */
 function setVisible(id, value) {
     airportDOMIndex[id].connections
-        .attr("opacity", value ? 0.9 : 0.015)
+        .attr("opacity", value ? 0.9 : 0.05)
         .attr("stroke-width", value ? 3.0 : 1.5)
         .raise();
     airportDOMIndex[id].label
@@ -64,11 +67,10 @@ async function plotAirports() {
         .data(await airportdata, d => d.id)
         .join("p")
         .each(function(airportDatum) {
-
             // Flight connections
             const connections = map.select(".connections").append("g");
             connections
-                .attr("opacity", 0.015)
+                .attr("opacity", 0.05)
                 .selectAll("path")
                 .data(conn_index[airportDatum.id])
                 .join("path")
@@ -79,12 +81,13 @@ async function plotAirports() {
                          + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, `
                          + `${dport.longpx} ${dport.latpx}`;
                 })
-                .attr("stroke", d => redGreen(d.delayfrac))
+                .attr("stroke", d => redBlue(d.delayfrac))
                 .each(function(flightDatum, idx, nodes) {
                     const margin = 4;
                     const oport = lookup[airportDatum.id];
                     const dport = lookup[flightDatum.destId];
 
+                    // Individual Path labels
                     const pathLabel = map.select(".labels").append("g")
                         .attr("class", "hoverdata")
                         .attr("visibility", "hidden")
@@ -157,6 +160,45 @@ async function plotAirports() {
                         setVisible(selectedAirport, false);
                     }
                     selectedAirport = airportDatum.id;
+
+                    // Update sidebar
+                    sidebar.select("h2")
+                        .text(airportDatum.dispName);
+                    
+                    let conn_data = conn_index[airportDatum.id];
+                    const total_flights = conn_data.reduce((acc, path) => acc + path.count, 0);
+                    const total_delays = conn_data.reduce((acc, path) => acc + path.delaycount, 0);
+                    sidebar.select("#summary")
+                        .text(`${total_delays} flights delayed of ${total_flights} total flights (${(100 * total_delays / total_flights).toFixed(1)})%`);
+                    
+                    sidebar.select("#routes")
+                        .selectAll("tr")
+                        .data(conn_data.sort((a, b) => b.delayfrac - a.delayfrac), d => d.destId)
+                        .join(
+                            enter => {
+                                let tr = enter.append("tr");
+                                tr.append("td")
+                                    .text(d => lookup[d.destId].code)
+                                let val = tr.append("td")
+                                val.append("div")
+                                    .attr("class", "inlinebar")
+                                    .style("width", d => 110 * d.delayfrac)
+                                    .style("background-color", d => redBlue(d.delayfrac));
+                                val.append("div")
+                                    .style("display", "inline-block")
+                                    .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
+                                return tr;
+                            }, 
+                            update => {
+                                const td = update.select(":last-child")
+                                td.select(":first-child")
+                                    .style("width", d => 110 * d.delayfrac)
+                                    .style("background-color", d => redBlue(d.delayfrac));
+                                td.select(":last-child")
+                                    .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
+                                return update;
+                            }
+                        );
                 }
             });
         });
