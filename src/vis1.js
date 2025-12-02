@@ -11,7 +11,19 @@ const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
 }));
 
 
+async function buildLookup() {
+    const lookup = {};
+    return airportdata.then(data => data.forEach(
+        row => lookup[row.id] = {
+            code: row.code,
+            latpx: row.latpx, 
+            longpx: row.longpx,
+        }
+    )).then(_ => lookup);
+}
+
 async function plotAirports() {
+    const lookup = await buildLookup();
     map.append("g")
         .attr("fill", "brown")
         .attr("fill-opacity", 0.5)
@@ -22,30 +34,41 @@ async function plotAirports() {
         .join("circle")
         .attr("transform", d => `translate(${d.longpx},${d.latpx})`)
         .attr("r", _d => 5)
-        .append("title")
-        .text(d => d.code);
-}
-
-async function plotFlights() {
-    let airport_lookup = {};
-    airportdata.then(data => data.forEach(
-        row => airport_lookup[row.id] = {latpx: row.latpx, longpx: row.longpx}
-    ))
-    map.append("g")
-        .attr("stroke", "#ddd")
-        .attr("stroke-width", 0.4)
-        .selectAll()
-        .data(await v1_flightdata)
-        .join("path")
-        .attr("d", d => {
-            let oport = airport_lookup[d.originId];
-            let dport = airport_lookup[d.destId];
-            return `M ${oport.longpx} ${oport.latpx} L ${dport.longpx} ${dport.latpx}`;
+        .on("mouseover", async function (event, ad) {
+            const hoverdata = map.append("g")
+                .attr("class", "hoverdata")
+            const active_label = hoverdata.append("g")
+                .attr("transform", `translate(${ad.longpx},${ad.latpx})`);
+            
+            // Label
+            const text = active_label.append("text").attr("x", 0).attr("y", 0);
+            text.append("tspan").attr("x", 0).attr("dy", "1.2em")
+                .text(ad.code);
+            const {width: bbwidth, height: bbheight} = active_label.node().getBBox();
+            const margin = 8;
+            active_label.insert('rect', ':first-child') // create background rect
+                .attr("x", -margin)
+                .attr("y", 0)
+                .attr("width", bbwidth + 2 * margin)
+                .attr("height", bbheight + 2 * margin);
+            
+            hoverdata.append("g")
+                .attr("stroke", "#444")
+                .attr("stroke-width", 1.5)
+                .attr("fill", "none")
+                .selectAll()
+                .data((await v1_flightdata).filter(fd => fd.originId === ad.id))
+                .join("path")
+                .attr("d", fd => {
+                    const oport = lookup[fd.originId];
+                    const dport = lookup[fd.destId];
+                    return `M ${oport.longpx} ${oport.latpx} Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, ${dport.longpx} ${dport.latpx}`;
+                });
         })
+        .on("mouseout", () => map.selectAll(".hoverdata").remove())
 }
 
 
 export async function main() {
     return plotAirports()
-           .then(plotFlights);
 }
