@@ -26,3 +26,23 @@ export const airportdata = d3.csv(
         }
     }
 );
+
+export const airlinenames = {
+    "9E": "Endeavor",
+    "AA": "American",
+    "AS": "Alaska",
+    "B6": "JetBlue",
+    "DL": "Delta",
+    "F9": "Frontier",
+    "G4": "Allegiant",
+    "HA": "Hawaiian",
+    "MQ": "Envoy",
+    "NK": "Spirit",
+    "OH": "PSA",
+    "OO": "SkyWest",
+    "UA": "United",
+    "WN": "Southwest",
+    "YX": "Republic"
+}
+
+export const airlinedata = d3.csv("../data/airline_cts.csv");
