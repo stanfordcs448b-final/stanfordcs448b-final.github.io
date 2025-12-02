@@ -81,6 +81,13 @@
 - 2 bar charts (maybe upgrade to violin plot later)
   - 1 for rate of delay
   - 1 for length of delay
+- Datasets:
+  - by airport e.g.
+  - Airport
+  - Delay pctg
+  - Not delayed pctg
+  - delayed pctg in 15 min intervals, 0-180 min, less than 0 min, 180+ min, as pctgs
+  - one row is all others
 
 
 ### Break assignments:
