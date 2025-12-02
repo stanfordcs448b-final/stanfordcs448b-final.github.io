@@ -15,26 +15,37 @@
     padding: 10px
 }
 
+.hoverdata {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .hoverdata text {
   fill: black;
   font-size: 1.0em;
 }
 
 .hoverdata rect {
+  fill: #eee;
   rx: 4px;
   ry: 4px;
-  fill: #eee;
 }
 
-.airport {
+.airports {
   fill: brown;
   fill-opacity: 0.5;
   stroke: white;
   stroke-width: 0.5;
   z-index: 80;
 }
+
+.airports circle:hover {
+  stroke: yellow;
+}
+
 .connections {
+  fill: none;
   stroke: #444;
   stroke-width: 1.5;
-  fill: none;
 }

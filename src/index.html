@@ -9,7 +9,14 @@
 <body>
     <div id="container1">
         <svg id="map" width="975" height="610" viewbox="0 0 975 610">
+            <g id="background"></g>
+            <g id="vis">
+                <g class="connections"></g>
+                <g class="airports"></g>
+                <g class="labels"></g>
+            </g>
         </svg>
+        <div class="d3cache" style="display: none;"></div>
     </div>
     <div id="container2">
     </div>

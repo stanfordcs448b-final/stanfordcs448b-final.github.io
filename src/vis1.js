@@ -35,61 +35,83 @@ async function buildConnections() {
     }, {}));
 }
 
+let selectedAirport = null;
+/** @type {Record<number, {connections: d3.Selection<SVGGElement, any, HTMLElement, any>, label: d3.Selection<SVGGElement, any, HTMLElement, any>}>} */
+let airportDOMIndex = {};
+
+/**
+ * @param {number} id 
+ * @param {boolean} value */
+function setVisible(id, value) {
+    airportDOMIndex[id].connections.attr("opacity", value ? 0.95 : 0.02);
+    airportDOMIndex[id].label.attr("visibility", value ? "visible" : "hidden");
+}
+
 async function plotAirports() {
     const lookup = await buildLookup();
     const conn_index = await buildConnections();
 
-    map.append("g")
-        .selectAll()
-        .data(await airportdata)
-        .join("g")
-        .each(async function(ad) {
-            const group = d3.select(this);
+    d3.select("#container1 .d3cache").selectAll("p")
+        .data(await airportdata, d => d.id)
+        .join("p")
+        .each(function(airportDatum) {
 
-            // Airport connections
-            const connections = group.append("g")
-                .attr("class", "connections")
-                .selectAll()
-                .data(conn_index[ad.id])
+            const connections = map.select(".connections").append("g");
+            connections
+                .attr("opacity", 0.02)
+                .selectAll("path")
+                .data(conn_index[airportDatum.id])
                 .join("path")
-                .attr("d", fd => {
-                    const oport = lookup[ad.id];
-                    const dport = lookup[fd.destId];
-                    return `M ${oport.longpx} ${oport.latpx} Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, ${dport.longpx} ${dport.latpx}`;
-                })
-                .attr("visibility", "hidden");
+                .attr("d", flightDatum => {
+                    const oport = lookup[airportDatum.id];
+                    const dport = lookup[flightDatum.destId];
+                    return `M ${oport.longpx} ${oport.latpx} `
+                         + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, `
+                         + `${dport.longpx} ${dport.latpx}`;
+                });
             
-            // Airport Label
-            const label = group.append("g")
+
+            const margin = 4;
+            const label = map.select(".labels").append("g")
                 .attr("class", "hoverdata")
-                .attr("transform", `translate(${ad.longpx},${ad.latpx})`)
+                .attr("transform", `translate(${airportDatum.longpx + margin},${airportDatum.latpx + margin})`)
                 .attr("visibility", "hidden");
             const text = label.append("text")
                 .attr("x", 0).attr("y", 0)
             text.append("tspan")
-                .attr("x", 0).attr("dy", "1.2em")
-                .text(ad.code);
+                .attr("x", 0).attr("dy", "1.0em")
+                .text(airportDatum.code);
+            // text.append("tspan")
+            //     .attr("x", 0).attr("dy", "1.2em")
+            //     .text(ad.code);
             const {width: bbwidth, height: bbheight} = label.node().getBBox();
-            const margin = 8;
             label.insert('rect', ':first-child') // create background rect
                 .attr("x", -margin)
-                .attr("y", 0)
+                .attr("y", -margin)
                 .attr("width", bbwidth + 2 * margin)
                 .attr("height", bbheight + 2 * margin);
+            
+            airportDOMIndex[airportDatum.id] = {connections, label};
+            
 
-            // Airport circle
-            group.append("circle")
-                .attr("class", "airport")
-                .attr("transform", d => `translate(${d.longpx},${d.latpx})`)
+            const airport = map.select(".airports").append("circle");
+            airport
+                .attr("transform", `translate(${airportDatum.longpx},${airportDatum.latpx})`)
                 .attr("r", _d => 5)
-                .on("mouseover", async function (_event, ad) {
-                    connections.attr("visibility", "visible");
-                    label.attr("visibility", "visible");
-                })
-                .on("mouseout", () => {
-                    connections.attr("visibility", "hidden");
-                    label.attr("visibility", "hidden");
-                });
+            .on("mouseover", function(_event, _data) {
+                setVisible(airportDatum.id, true);
+            })
+            .on("mouseout", function(_event, _data) {
+                if (selectedAirport !== airportDatum.id) {
+                    setVisible(airportDatum.id, false);
+                }
+            })
+            .on("click", function(_event, _data) {
+                if (selectedAirport !== null) {
+                    setVisible(selectedAirport, false);
+                }
+                selectedAirport = airportDatum.id;
+            });
         });
 }
 
