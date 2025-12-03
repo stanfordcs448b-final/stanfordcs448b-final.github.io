@@ -178,7 +178,7 @@ export const origindata = d3.csv("../data/origin_cts.csv",
     }
 );
 
-export const overalldata = d3.csv("../data/origin_cts.csv", 
+export const overalldata = d3.csv("../data/overall_cts.csv", 
     (d) => {
         let b = {
             1: +d[1],

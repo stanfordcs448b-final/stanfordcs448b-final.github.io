@@ -17,10 +17,10 @@ const canvas = d3.select("#canvas");
 const color = ['#1459D9', '#daa520'];
 const width = +canvas.attr("width");
 const height = +canvas.attr("height");
-const marginTop = 30;
-const marginRight = 0;
-const marginBottom = 30;
-const marginLeft = 40;
+const marginTop = 20;
+const marginRight = 20;
+const marginBottom = 20;
+const marginLeft = 20;
 const barSize = 10;
 
 let airline_dict;
@@ -31,7 +31,6 @@ let time_dict;
 let data_key;
 
 async function drawGraph(newData) {
-    console.log(newData);
     
     const xscale = d3.scaleLinear()
         .domain([0, 1])
@@ -42,14 +41,18 @@ async function drawGraph(newData) {
         .domain([0, 1])
         .range([height - marginBottom, marginTop]);
 
-    canvas.selectAll("rect").remove();
+    canvas.selectAll("#leftbar").remove();
+
+    console.log(overalldata);
     canvas.append("rect")
-      .attr("x", 100)
-      .attr("y", 50)
-      .attr("width", 20)
+        .attr("class", "leftbar")
+      .attr("x", marginLeft)
+      .attr("y", marginTop)
+      .attr("width", 10)
       .attr("height", 140)
-      .attr("rx", 5)
-      .attr("ry", 5);
+      .attr("fill", "brown")
+      .attr("rx", 2)
+      .attr("ry", 2);
 
 }
 
