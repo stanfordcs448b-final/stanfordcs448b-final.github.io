@@ -19,7 +19,8 @@ const height = +canvas.attr("height");
 const marginTop = 20;
 const marginRight = 20;
 const marginBottom = 20;
-const marginLeft = 20;
+const marginLeft = 50;
+const margin = {marginTop, marginRight, marginBottom, marginLeft};
 const barSize = 10;
 
 let airline_dict;
@@ -43,16 +44,29 @@ async function drawGraph(newData) {
     canvas.selectAll("#leftbar").remove();
 
     console.log(overall_dict);
-    canvas.append("rect")
-        .attr("class", "leftbar")
-      .attr("x", marginLeft)
-      .attr("y", marginTop)
-      .attr("width", overalldata['total'])
-      .attr("height", 140)
-      .attr("fill", "brown")
-      .attr("rx", 2)
-      .attr("ry", 2);
 
+    // populate information about the stacked bars
+    let bars_y = [0, overall_dict['cancelled'], overall_dict['delayed']];
+    let c_sum = 0;
+    for(let i = 0; i < bars_y.length; i++) {
+        c_sum += bars_y[i];
+        bars_y[i] = c_sum / overall_dict['total'];
+    }
+    bars_y.push(1);
+
+    for(let i = 0; i < bars_y.length; i++) {
+        const rInt = Math.floor(i / 5 * 255);
+        const rgbString = `rgb(${rInt}, ${rInt}, ${rInt})`;
+        canvas.append("rect")
+            .attr("class", "leftbar")
+            .attr("x", marginLeft)
+            .attr("y", marginTop)
+            .attr("width", 30)
+            .attr("height", 140)
+            .attr("fill", rgbString)
+            .attr("rx", 2)
+            .attr("ry", 2);
+    }
 }
 
 async function updateDataState() {
