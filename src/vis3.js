@@ -1,4 +1,15 @@
-import { airportdata, toydata, airlinenames, airlinedata } from "./data.js";
+import { 
+    airportdata, 
+    toydata, 
+    airlinenames, 
+    airlinedata, 
+    monthnames, 
+    monthdata, 
+    timenames, 
+    timedata,
+    origindata,
+    overalldata
+} from "./data.js";
 
 const container = d3.select('#container3')
 const leftCanvas = d3.select("#canvas");
@@ -17,7 +28,10 @@ let month_dict;
 let origin_dict;
 let time_dict;
 
-async function updateGraph(newData) {
+let data_key;
+
+async function drawGraph(newData) {
+    console.log(newData);
     
     const xscale = d3.scaleLinear()
         .domain([0, 1])
@@ -28,34 +42,63 @@ async function updateGraph(newData) {
         .domain([0, 1])
         .range([leftHeight - marginBottom, marginTop])
 
-    // bind data
-    const appending = leftCanvas.selectAll('rect')
-       .data(newData)
-       .join('rect')
-       .attr('x', marginLeft)
-       .attr('y', (d) => d.key)
-       .attr('width', d => 100)
-       .attr('height', 100)
-       .style('fill', d => color[0])
-       .style('stroke', 'black')
-       .text(d => d["origin"]);
 }
 
 async function updateDataState() {
     let data;
-    let data_key = d3.select("#firstDropdown").property('value');
+    data_key = d3.select("#firstDropdown").property('value');
+    let title_text_span = d3.select("#factorName");
+
+    // case Airline selected
     if(data_key === "dsAirline") {
         data = await airlinedata;
-
         // default value
-        d3.select('#suggestionsInput').attr("value", "Delta");
+        d3.select('#suggestionsInput').attr("value", "");
+        title_text_span.text("airline");
 
+        // clear suggestions
         d3.select('#suggestions').selectChildren().remove();
-        console.log(data[1])
         for(let key of Object.keys(airline_dict)) {
             let row = airline_dict[key];
             let option = d3.select('#suggestions').append('option');
             option.attr('value', airlinenames[row['key']]);
+        }
+    }
+    // case Month selected
+    if(data_key === "dsMonth") {
+        data = await monthdata;
+        title_text_span.text("month");
+        d3.select('#suggestionsInput').attr("value", "");
+        d3.select('#suggestions').selectChildren().remove();
+        for(let i = 1; i <= 12; i++) {
+            let row = month_dict[i];
+            let option = d3.select('#suggestions').append('option');
+            option.attr('value', monthnames[row.key - 1]);
+        }
+    }
+    // case Time selected
+    if(data_key === "dsTime") {
+        data = await timedata;
+        title_text_span.text("time of day");
+        d3.select('#suggestionsInput').attr("value", "");
+        d3.select('#suggestions').selectChildren().remove();
+        for(let i = 0; i <= 3; i++) {
+            let row = time_dict[i];
+            let option = d3.select('#suggestions').append('option');
+            option.attr('value', timenames[row.key]);
+        }
+    }
+    // case Origin selected
+    if(data_key === "dsOrigin") {
+        data = await origindata;
+
+        // default value
+        title_text_span.text("origin airport");
+        d3.select('#suggestionsInput').attr("value", "SFO");
+        d3.select('#suggestions').selectChildren().remove();
+        for(let row of data) {
+            let option = d3.select('#suggestions').append('option');
+            option.attr('value', row['key']);
         }
     }
 
@@ -64,7 +107,6 @@ async function updateDataState() {
 
 function pivotDataset(data) {
     let obj = {};
-    console.log(data);
     for(let row of data) {
         obj[row['key']] = { ...row };
     }
@@ -74,6 +116,10 @@ function pivotDataset(data) {
             out_obj[key] = obj[key];
             return out_obj;
         }, {});;
+}
+
+function reverseDict(dict) {
+    return Object.entries(dict).map(([key, value]) => [value, key]);
 }
 
 async function initData() {
@@ -86,20 +132,23 @@ async function initData() {
             obj[key] = unsorted_airline_dict[key];
             return obj;
         }, {});
-    console.log(airline_dict);
+    month_dict = pivotDataset(await monthdata);
+    time_dict = pivotDataset(await timedata);
+    origin_dict = pivotDataset(await origindata);
+    await overalldata;
 }
 
 export async function plotBars() {
-    initData();
+    await initData();
 
     // generate initial legend
     let data = updateDataState();
-    updateGraph(data);
+    drawGraph(data);
 
     // handle on click event
     d3.select('#menuDiv')
     .on('change', function() {
         data = updateDataState();
-        updateGraph(data);
+        drawGraph(data);
     });
 }
