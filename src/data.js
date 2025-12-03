@@ -83,6 +83,7 @@ export const monthnames = [
     "Jul",
     "Aug",
     "Sep",
+    "Oct",
     "Nov",
     "Dec"
 ]
@@ -116,7 +117,7 @@ export const monthdata = d3.csv("../data/month_cts.csv",
 );
 
 export const timenames = [
-    "Late Night / Early Morning (12am - 6am)",
+    "Early Morning (12am - 6am)",
     "Morning (6am - 12pm)",
     "Afternoon (12pm - 6pm)",
     "Evening (6pm - 12am)"

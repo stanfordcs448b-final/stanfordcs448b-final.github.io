@@ -1,4 +1,3 @@
-import { get } from "browser-sync";
 import { 
     airportdata, 
     airlinenames, 
@@ -18,10 +17,10 @@ const canvas = d3.select("#canvas");
 
 const width = +canvas.attr("width");
 const height = +canvas.attr("height");
-const marginTop = 100;
+const marginTop = 50;
 const marginRight = 20;
 const marginBottom = 50;
-const marginLeft = 100;
+let marginLeft = 100;
 const margin = {marginTop, marginRight, marginBottom, marginLeft};
 const barSize = 10;
 
@@ -33,69 +32,145 @@ let overall_dict;
 
 let data_key;
 
-// Declare the y (vertical position) scale.
-const yscale = d3.scaleLinear()
-    .domain([0, 1])
-    .range([height - marginBottom, marginTop]);
 
-    // Declare the y (vertical position) scale.
-const xscale = d3.scaleLinear()
-    .domain([0, 1])
-    .range([width - marginRight, marginLeft]);
 
 async function drawGraph(newData) {
     let table = await newData;
 
-    console.log(data_key);
+    canvas.selectAll(".leftbar").remove();
+    canvas.selectAll(".barLabel").remove();
+    canvas.selectAll(".key").remove();
+
     let suggestion = d3.select('#suggestionsInput').property("value");
     console.log(suggestion);
 
     let data_dict;
-    let row_found = false;
+    let rows_to_graph = [];
+    let row_names = [];
+
     if(data_key == "dsAirline") {
         data_dict = airline_dict;
         let get_row_id = reverseDict(airlinenames);
         if(suggestion in get_row_id) {
-            let id = get_row_id[suggestion]
-            // let row = airline_dict[id];
-            console.log('row');
+            row_names.push(suggestion);
+            let row = data_dict[get_row_id[suggestion]];
+            rows_to_graph.push(row);
+            rows_to_graph.push(overall_dict)
+            row_names.push('All flights')
+        }
+        else {
+            for(let id of Object.keys(get_row_id)) {
+                row_names.push(id);
+                let row = data_dict[get_row_id[id]];
+                rows_to_graph.push(row)
+            }
         }
     }
+    if(data_key == "dsOrigin") {
+        data_dict = origin_dict;
+        if(suggestion in data_dict) {
+            row_names.push(suggestion);
+            let row = data_dict[suggestion];
+            rows_to_graph.push(row);
+            rows_to_graph.push(overall_dict)
+            row_names.push('All flights')
+        }
+        else {
+            let i = 0;
+            for(let id of Object.keys(data_dict)) {
+                i++
+                row_names.push(id);
+                let row = data_dict[id];
+                rows_to_graph.push(row)
+                if(i > 15) break;
+            }
+        }
+    }
+    if(data_key == "dsMonth") {
+        data_dict = month_dict;
+        let get_row_id = reverseArr(monthnames);
+        if(monthnames.includes(suggestion)) {
+            console.log(suggestion);
+            row_names.push(suggestion);
+            let row = data_dict[get_row_id[suggestion] + 1];
+            rows_to_graph.push(row);
+            rows_to_graph.push(overall_dict)
+            row_names.push('All months')
+        }
+        else {
+            for(let id of Object.keys(get_row_id)) {
+                row_names.push(id);
+                let row = data_dict[get_row_id[id] + 1];
+                rows_to_graph.push(row)
+            }
+        }
+    }
+    if(data_key == "dsTime") {
+        data_dict = time_dict;
+        let get_row_id = reverseArr(timenames);
+        if(timenames.includes(suggestion)) {
+            console.log(suggestion);
+            row_names.push(suggestion);
+            let row = data_dict[get_row_id[suggestion]];
+            rows_to_graph.push(row);
+            rows_to_graph.push(overall_dict)
+            row_names.push('All times of day')
+        }
+        else {
+            for(let id of Object.keys(get_row_id)) {
+                row_names.push(id);
+                let row = data_dict[get_row_id[id]];
+                rows_to_graph.push(row)
+            }
+        }
+    }
+    
+    if(data_key == "dsTime") {
+        marginLeft = 200;
+    }
+    else {
+        marginLeft = 100;
+    }
 
+    // Declare the y (vertical position) scale.
+    const yscale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([height - marginBottom, marginTop]);
 
-    canvas.selectAll("#leftbar").remove();
-    let rows_to_graph = [table[0], table[1]];
-    let row_names = ["0", "1"];
-
-    rows_to_graph.push(overall_dict)
-    row_names.push('All flights')
-
+    // Declare the y (vertical position) scale.
+    const xscale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([width - marginRight, marginLeft]);
+    
 
     const labels = ['cancelled', 'delayed', 'on time'];
     const colors = [redBlue(1.0), redBlue(0.6), redBlue(0.1)];
-    console.log(colors);
 
     let axis_g = canvas.append('g')
-        .attr('transform', `translate(0, 90)`)
+        .attr('transform', `translate(0, ${marginTop - 5})`)
         .call(d3.axisTop(xscale.copy().range([marginLeft, width - marginRight])));
 
     axis_g.selectAll("path").remove();
 
-    const barHeight = 20;
-    let key_top = marginTop + rows_to_graph.length * barHeight * 1.5 + 10;
+    const barHeight = 15;
+    const barSpacing = 1.5;
+    let key_top = marginTop + rows_to_graph.length * barHeight * barSpacing + 10;
     canvas.append('text')
+        .attr('class', 'key')
         .text(labels[0])
         .attr('x', marginLeft)
         .attr('y', key_top)
         .attr('fill', colors[0]);
 
     canvas.append('text')
+        .attr('class', 'key')
         .text(labels[1])
         .attr('x', marginLeft + 30)
         .attr('y', key_top + 15)
         .attr('fill', colors[1]);
 
     canvas.append('text')
+        .attr('class', 'key')
         .text(labels[2])
         .attr('x', marginLeft + 60)
         .attr('y', key_top + 30)
@@ -119,7 +194,7 @@ async function drawGraph(newData) {
         }
         bars_x.push(1);
         
-        const y =  marginTop + row_idx * barHeight * 1.5;
+        const y =  marginTop + row_idx * barHeight * barSpacing;
         for(let i = 0; i < bars_x.length - 1; i++) {
             const rInt = Math.floor(i / 3 * 255);
             const rgbString = colors[i];
@@ -145,7 +220,7 @@ async function drawGraph(newData) {
                     let tooltip_x = x + width * 0.5 - bbox.width * 0.5;
                     if(tooltip_x < 0) tooltip_x = marginLeft;
                     group.attr('transform',
-                        `translate(${tooltip_x} ${marginTop + row_idx * barHeight * 1.5})`
+                        `translate(${tooltip_x} ${marginTop + row_idx * barHeight * barSpacing})`
                     );
                     group.insert('rect', ':first-child') // create background rectangle
                     .attr("x", -2)
@@ -157,7 +232,7 @@ async function drawGraph(newData) {
                     canvas.selectAll('.hoverdata').remove()    // Remove all ptLabels
                 });
         }
-        let g = canvas.append("g");
+        let g = canvas.append("g").attr('class', 'barLabel');
         let t = g.append('text').text(row_names[row_idx]);
         const bbox = g.node().getBBox();
         t.attr("x", marginLeft - bbox.width - 5).attr("y", y + barHeight * 0.5 + bbox.height * 0.3);
@@ -239,8 +314,20 @@ function pivotDataset(data) {
         }, {});;
 }
 
-function reverseDict(dict) {
-    return Object.entries(dict).map(([key, value]) => [value, key]);
+function reverseDict(json) {
+    var ret = {};
+    for(var key in json) {
+        ret[json[key]] = key;
+    }
+    return ret;
+}
+
+function reverseArr(arr) {
+    var ret = {};
+    for(let i = 0; i < arr.length; i++) {
+        ret[arr[i]] = i;
+    }
+    return ret;
 }
 
 async function initData() {
