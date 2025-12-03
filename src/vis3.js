@@ -1,6 +1,5 @@
 import { 
     airportdata, 
-    toydata, 
     airlinenames, 
     airlinedata, 
     monthnames, 
@@ -27,11 +26,11 @@ let airline_dict;
 let month_dict;
 let origin_dict;
 let time_dict;
+let overall_dict;
 
 let data_key;
 
 async function drawGraph(newData) {
-    
     const xscale = d3.scaleLinear()
         .domain([0, 1])
         .range([marginLeft, width - marginRight])
@@ -43,12 +42,12 @@ async function drawGraph(newData) {
 
     canvas.selectAll("#leftbar").remove();
 
-    console.log(overalldata);
+    console.log(overall_dict);
     canvas.append("rect")
         .attr("class", "leftbar")
       .attr("x", marginLeft)
       .attr("y", marginTop)
-      .attr("width", 10)
+      .attr("width", overalldata['total'])
       .attr("height", 140)
       .attr("fill", "brown")
       .attr("rx", 2)
@@ -147,7 +146,7 @@ async function initData() {
     month_dict = pivotDataset(await monthdata);
     time_dict = pivotDataset(await timedata);
     origin_dict = pivotDataset(await origindata);
-    await overalldata;
+    overall_dict = (await overalldata)[0];
 }
 
 export async function plotBars() {
