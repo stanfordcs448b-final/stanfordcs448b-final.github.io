@@ -10,51 +10,63 @@ const marginTop = 30;
 const marginRight = 0;
 const marginBottom = 30;
 const marginLeft = 40;
+const barSize = 10;
 
-// Declare the x (horizontal position) scale.
-const x = d3.scaleBand()
-    .domain([0, d3.max(airlinedata, (d) => airlinedata.total)])
-    .range([marginLeft, leftWidth - marginRight])
-    .padding(0.1);
-
-// Declare the y (vertical position) scale.
-const y = d3.scaleLinear()
-    .domain([0, d3.max(data, (d) => d.frequency)])
-    .range([leftHeight - marginBottom, marginTop]);
-
-function updateData(newData) {
+async function updateGraph(newData) {
+    await newData;
     console.log(newData);
+    
+    const xscale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([marginLeft, leftWidth - marginRight])
+
+    // Declare the y (vertical position) scale.
+    const yscale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([leftHeight - marginBottom, marginTop])
+        
+    console.log(newData)
 
     // bind data
     const appending = leftCanvas.selectAll('rect')
-       .data(newData);
+       .data(newData)
+       .join('rect')
+       .attr('x', marginLeft)
+       .attr('y', (d) => d.key)
+       .attr('width', d => 100)
+       .attr('height', 100)
+       .style('fill', d => color[0])
+       .style('stroke', 'black')
+       .text(d => d["origin"]);
+}
 
-    // add new elements
-    appending.enter().append('rect');
+async function updateDataState() {
+    let data;
+    data = await airlinedata;
 
-    // update existing elements
-    appending.transition()
-        .duration(0)
-        .style("fill", function(d,i){return color[i];})
-        .attr("x", 10)
-        .attr("y", 10)
-        .attr("width",function (d) {return d.y; })//d.y;})
-        .attr("height", 19);
+    let data_key = d3.select("#firstDropdown").property('value');
+    console.log(data_key);
+    if(data_key === "dsAirline") {
+        d3.select('#suggestionsInput').attr("value", "Blue");
+        d3.select('#suggestions').selectChildren().remove();
+    }
+    console.log(data);
 
-    // remove old elements
-    appending.exit().remove();
+    return data;
 }
 
 export async function plotBars() {
-    leftCanvas.append("g");
-
+    // Declare the x (horizontal position) scale.
+    
+    
     // generate initial legend
-    updateData(toydata["ds2"]);
+    let data = updateDataState();
+    updateGraph(data);
 
     // handle on click event
     d3.select('#menuDiv')
     .on('change', function() {
-        let newData = d3.select("#firstDropdown").property('value');
-        updateData(toydata[newData]);
+        data = updateDataState();
+        updateGraph(data);
     });
 }
