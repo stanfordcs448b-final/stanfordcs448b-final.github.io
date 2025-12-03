@@ -82,12 +82,11 @@ async function plotAirports() {
                          + `${dport.longpx} ${dport.latpx}`;
                 })
                 .attr("stroke", d => redBlue(d.delayfrac))
-                .each(function(flightDatum, idx, nodes) {
+                .each(function(flightDatum, idx, nodes) { // create edge labels
                     const oport = lookup[airportDatum.id];
                     const dport = lookup[flightDatum.destId];
 
                     // Individual Path labels
-                    const margin = 4;
                     const pathLabel = map.select(".labels").append("g")
                         .attr("class", "hoverdata")
                         .attr("visibility", "hidden")
@@ -97,12 +96,6 @@ async function plotAirports() {
                     text.append("tspan")
                         .attr("x", 0).attr("dy", "1.0em")
                         .text(`${airportDatum.code} → ${lookup[flightDatum.destId].code}`);
-                    const {width: bbwidth, height: bbheight} = pathLabel.node().getBBox();
-                    pathLabel.insert("rect", ":first-child")
-                        .attr("x", -margin)
-                        .attr("y", -margin)
-                        .attr("width", bbwidth + 2 * margin)
-                        .attr("height", bbheight + 2 * margin)
                     
                     d3.select(this).on("mouseover", function(_event, _data) {
                         if (selectedAirport !== airportDatum.id) return;
@@ -116,10 +109,10 @@ async function plotAirports() {
             
 
             // Airport labels
-            const margin = 4;
+            const offset = 12;
             const airportLabel = map.select(".labels").append("g")
                 .attr("class", "hoverdata")
-                .attr("transform", `translate(${airportDatum.longpx + margin},${airportDatum.latpx + margin})`)
+                .attr("transform", `translate(${airportDatum.longpx + offset},${airportDatum.latpx - offset})`)
                 .attr("visibility", "hidden");
             const text = airportLabel.append("text")
                 .attr("x", 0).attr("y", 0)
@@ -129,12 +122,6 @@ async function plotAirports() {
             // text.append("tspan")
             //     .attr("x", 0).attr("dy", "1.2em")
             //     .text(ad.code);
-            const {width: bbwidth, height: bbheight} = airportLabel.node().getBBox();
-            airportLabel.insert("rect", ":first-child") // create background rect
-                .attr("x", -margin)
-                .attr("y", -margin)
-                .attr("width", bbwidth + 2 * margin)
-                .attr("height", bbheight + 2 * margin);
 
 
             airportDOMIndex[airportDatum.id] = {connections, label: airportLabel};
@@ -202,6 +189,21 @@ async function plotAirports() {
                         );
                 }
             });
+        });
+    
+    // add backgrounds to all labels
+    const margin = 4;
+    map.select(".labels").selectAll("g")
+        .each(function() {
+            /** @type {d3.Selection<SVGGElement, any, HTMLElement, any>} */
+            // @ts-ignore
+            const pathLabel = d3.select(this);
+            const {width, height} = pathLabel.node().getBBox();
+            pathLabel.insert("rect", ":first-child")
+                .attr("x", -margin)
+                .attr("y", -margin)
+                .attr("width", width + 2 * margin)
+                .attr("height", height + 2 * margin)
         });
 }
 
