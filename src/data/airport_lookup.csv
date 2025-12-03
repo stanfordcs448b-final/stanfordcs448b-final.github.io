@@ -14,6 +14,7 @@ id,code,dispName,lat,long
 10208,AGS,Augusta Regional at Bush Field,33.37,-81.96444444
 10245,AKN,King Salmon Airport,58.67805556,-156.65194444
 10257,ALB,Albany International,42.74916667,-73.80472222
+10275,ALW,Walla Walla Regional,46.0925,-118.28416667
 10279,AMA,Rick Husband Amarillo International,35.23166667,-101.69916667
 10299,ANC,Ted Stevens Anchorage International,61.17416667,-149.99805556
 10333,APN,Alpena County Regional,45.07805556,-83.56027778
@@ -32,6 +33,7 @@ id,code,dispName,lat,long
 10577,BGM,Greater Binghamton/Edwin A. Link Field,42.20833333,-75.97972222
 10581,BGR,Bangor International,44.8075,-68.82805556
 10599,BHM,Birmingham-Shuttlesworth International,33.56388889,-86.75222222
+10617,BIH,Bishop Airport,37.37305556,-118.36361111
 10620,BIL,Billings Logan International,45.80777778,-108.54361111
 10627,BIS,Bismarck Municipal,46.76861111,-100.74138889
 10631,BJI,Bemidji Regional,47.51083333,-94.93472222
@@ -42,6 +44,7 @@ id,code,dispName,lat,long
 10713,BOI,Boise Air Terminal,43.56444444,-116.22277778
 10721,BOS,Logan International,42.36305556,-71.00694444
 10728,BPT,Jack Brooks Regional,29.95333333,-94.02416667
+10731,BQK,Brunswick Golden Isles,31.25916667,-81.46638889
 10732,BQN,Rafael Hernandez,18.49472222,-67.12944444
 10739,BRD,Brainerd Lakes Regional,46.40416667,-94.13361111
 10747,BRO,Brownsville South Padre Island International,25.91083333,-97.42916667
@@ -63,19 +66,20 @@ id,code,dispName,lat,long
 11003,CID,The Eastern Iowa,41.88472222,-91.71083333
 11013,CIU,Chippewa County International,46.255,-84.47694444
 11027,CKB,North Central West Virginia,39.29777778,-80.2275
-11041,CLD,McClellan-Palomar,33.12833333,-117.28
 11042,CLE,Cleveland-Hopkins International,41.41027778,-81.85333333
 11049,CLL,Easterwood Field,30.58805556,-96.36083333
 11057,CLT,Charlotte Douglas International,35.21305556,-80.95111111
 11066,CMH,John Glenn Columbus International,39.99694444,-82.89222222
 11067,CMI,University of Illinois/Willard,40.03833333,-88.27666667
 11076,CMX,Houghton County Memorial,47.16833333,-88.48916667
+11092,CNY,Canyonlands Regional,38.76388889,-109.74555556
 11097,COD,Yellowstone Regional,44.52027778,-109.02388889
 11109,COS,City of Colorado Springs Municipal,38.80583333,-104.70083333
 11111,COU,Columbia Regional,38.82138889,-92.21555556
 11122,CPR,Casper/Natrona County International,42.90583333,-106.46361111
 11140,CRP,Corpus Christi International,27.76111111,-97.49611111
 11146,CRW,West Virginia International Yeager,38.37611111,-81.59277778
+11150,CSG,Columbus Airport,32.51388889,-84.94111111
 11193,CVG,Cincinnati/Northern Kentucky International,39.04888889,-84.66777778
 11203,CWA,Central Wisconsin,44.78,-89.67527778
 11233,CYS,Cheyenne Regional/Jerry Olson Field,41.15666667,-104.82027778
@@ -87,7 +91,9 @@ id,code,dispName,lat,long
 11288,DEC,Decatur Airport,39.83444444,-88.86555556
 11292,DEN,Denver International,39.86111111,-104.67194444
 11298,DFW,Dallas/Fort Worth International,32.89722222,-97.03777778
+11308,DHN,Dothan Regional,31.32111111,-85.44944444
 11315,DIK,Dickinson - Theodore Roosevelt Regional,46.80055556,-102.80444444
+11336,DLG,Dillingham Airport,59.04472222,-158.50555556
 11337,DLH,Duluth International,46.84138889,-92.18305556
 11413,DRO,Durango La Plata County,37.15166667,-107.75388889
 11423,DSM,Des Moines International,41.53388889,-93.66305556
@@ -113,7 +119,6 @@ id,code,dispName,lat,long
 11648,FCA,Glacier Park International,48.31388889,-114.25222222
 11695,FLG,Flagstaff Pulliam,35.14027778,-111.66916667
 11697,FLL,Fort Lauderdale-Hollywood International,26.07138889,-80.14944444
-11711,FMN,Four Corners Regional,36.74138889,-108.23111111
 11721,FNT,Bishop International,42.96555556,-83.74472222
 11725,FOD,Fort Dodge Regional,42.5525,-94.19138889
 11775,FSD,Joe Foss Field,43.58083333,-96.74166667
@@ -133,6 +138,7 @@ id,code,dispName,lat,long
 11986,GRR,Gerald R. Ford International,42.88194444,-85.52388889
 11995,GSO,Piedmont Triad International,36.10138889,-79.94111111
 11996,GSP,Greenville-Spartanburg International,34.89555556,-82.21888889
+11997,GST,Gustavus Airport,58.42527778,-135.7075
 12003,GTF,Great Falls International,47.47666667,-111.37305556
 12007,GTR,Golden Triangle Regional,33.44833333,-88.59138889
 12012,GUC,Gunnison-Crested Butte Regional,38.53611111,-106.92944444
@@ -149,6 +155,7 @@ id,code,dispName,lat,long
 12206,HRL,Valley International,26.22638889,-97.65444444
 12217,HSV,Huntsville International-Carl T Jones Field,34.63722222,-86.775
 12223,HTS,Tri-State/Milton J. Ferguson Field,38.36861111,-82.56027778
+12250,HYA,Cape Cod Gateway,41.66944444,-70.28027778
 12255,HYS,Hays Regional,38.84222222,-99.27305556
 12264,IAD,Washington Dulles International,38.95611111,-77.46166667
 12265,IAG,Niagara Falls International,43.10944444,-78.93305556
@@ -160,6 +167,7 @@ id,code,dispName,lat,long
 12339,IND,Indianapolis International,39.71722222,-86.29472222
 12343,INL,Falls International Einarson Field,48.56555556,-93.40222222
 12391,ISP,Long Island MacArthur,40.79611111,-73.10055556
+12397,ITH,Ithaca Tompkins International,42.49138889,-76.45861111
 12402,ITO,Hilo International,19.72138889,-155.05444444
 12441,JAC,Jackson Hole,43.60722222,-110.73777778
 12448,JAN,Jackson Medgar Wiley Evers International,32.31111111,-90.07583333
@@ -224,6 +232,7 @@ id,code,dispName,lat,long
 13502,MTJ,Montrose Regional,38.50888889,-107.89444444
 13541,MVY,Martha's Vineyard Airport,41.39305556,-70.61222222
 13577,MYR,Myrtle Beach International,33.67972222,-78.92833333
+13795,OAJ,Albert J Ellis,34.82916667,-77.61222222
 13796,OAK,Oakland International,37.72138889,-122.22111111
 13830,OGG,Kahului Airport,20.90277778,-156.42611111
 13851,OKC,Okc Will Rogers International,35.3925,-97.60222222
@@ -329,11 +338,12 @@ id,code,dispName,lat,long
 15411,TYR,Tyler Pounds Regional,32.35388889,-95.40277778
 15412,TYS,McGhee Tyson,35.81111111,-83.99416667
 15569,VCT,Victoria Regional,28.85416667,-96.91861111
+15582,VEL,Vernal Regional,40.43611111,-109.51138889
+15607,VLD,Valdosta Regional,30.79,-83.275
 15624,VPS,Eglin AFB Destin Fort Walton Beach,30.48333333,-86.52611111
 15841,WRG,Wrangell Airport,56.48444444,-132.36972222
 15897,WYS,Yellowstone,44.68833333,-111.11777778
 15919,XNA,Northwest Arkansas National,36.28166667,-94.30777778
 15991,YAK,Yakutat Airport,59.50888889,-139.65972222
 16218,YUM,Yuma MCAS/Yuma International,32.65666667,-114.60611111
-16422,GUF,Gulf Shores International Jack Edwards Field,30.29027778,-87.67694444
 16869,XWA,Williston Basin International,48.25972222,-103.75055556
