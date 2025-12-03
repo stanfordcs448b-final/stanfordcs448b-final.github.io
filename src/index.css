@@ -2,6 +2,11 @@ body {
   font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
 
+rect {
+  rx: 3;
+  ry: 3;
+}
+
 #container1 {
   overflow: hidden;
   position: relative;

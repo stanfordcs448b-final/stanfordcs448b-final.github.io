@@ -12,11 +12,11 @@ import {
 } from "./data.js";
 
 const container = d3.select('#container3')
-const leftCanvas = d3.select("#canvas");
+const canvas = d3.select("#canvas");
 
 const color = ['#1459D9', '#daa520'];
-const leftWidth = +leftCanvas.attr("width");
-const leftHeight = +leftCanvas.attr("height");
+const width = +canvas.attr("width");
+const height = +canvas.attr("height");
 const marginTop = 30;
 const marginRight = 0;
 const marginBottom = 30;
@@ -35,12 +35,21 @@ async function drawGraph(newData) {
     
     const xscale = d3.scaleLinear()
         .domain([0, 1])
-        .range([marginLeft, leftWidth - marginRight])
+        .range([marginLeft, width - marginRight])
 
     // Declare the y (vertical position) scale.
     const yscale = d3.scaleLinear()
         .domain([0, 1])
-        .range([leftHeight - marginBottom, marginTop])
+        .range([height - marginBottom, marginTop]);
+
+    canvas.selectAll("rect").remove();
+    canvas.append("rect")
+      .attr("x", 100)
+      .attr("y", 50)
+      .attr("width", 20)
+      .attr("height", 140)
+      .attr("rx", 5)
+      .attr("ry", 5);
 
 }
 
