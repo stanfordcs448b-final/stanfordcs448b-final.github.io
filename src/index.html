@@ -7,6 +7,11 @@
 </head>
 
 <body>
+    <div>
+        <h1>Flight Delays</h1>
+        <h3>Scott Milner, Isaac Criddle</h3>
+        <p>Explore flight delays and their causes from 2024!</p>
+    </div>
     <div id="container1">
         <svg id="map" width="975" height="610" viewbox="0 0 975 610">
             <defs>
@@ -34,25 +39,22 @@
     <div id="container2">
     </div>
     <div id="container3">
-        <h2>How does <span>airline</span> affect delays?</h2>
-        <div id="canvasDiv">
-            <svg id="leftCanvas" width="400" height="610" viewbox="0 0 975 610">
-            </svg>
-            <svg id="rightCanvas" width="400" height="610" viewbox="0 0 975 610">
-            </svg>
-        </div>
-        <div id="menuDiv" width="100" height="610">
+        <h4>How does the <span id="factorName">origin airport</span> affect your delays?</h4>
+        <div id="menuDiv">
             <select id="firstDropdown">
                 <option value="dsAirline">Airline</option>
-                <option value="dsAirport">Airport</option>
-                <option value="dsTime" selected="selected">Time of Day</option> 
+                <option value="dsOrigin" selected="selected">Origin Airport</option>
+                <option value="dsTime">Time of Day</option> 
                 <option value="dsMonth">Month</option>
             </select>
             <datalist id="suggestions">
-                <option>Delta</option>
-                <option>Blue</option>
             </datalist>
-            <input type="text" autoComplete="on" list="suggestions"/> 
+            <input id="suggestionsInput" type="text" autoComplete="on" list="suggestions"/> 
+        </div>
+        <div id="canvasDiv">
+            <svg id="canvas" width="800" height="500" viewbox="0 0 800 500" background-color="lightblue">
+                <rect width="100%" height="100%" fill="lightgray"/>
+            </svg>
         </div>
     </div>
 </body>
