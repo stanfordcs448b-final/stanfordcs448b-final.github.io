@@ -12,7 +12,6 @@ const v1_flightdata = d3.csv("../data/v1_flights.csv", row => ({
     delaycount: +row.delaycount,
 }));
 
-
 /** @returns {Promise<Record<number, {code: number, dispName: string, latpx: number, longpx: number}>>} */
 async function buildLookup() {
     return airportdata.then(data => data.reduce((acc, row) => {
@@ -50,7 +49,7 @@ let airportDOMIndex = {};
  * @param {boolean} value */
 function setVisible(id, value) {
     airportDOMIndex[id].connections
-        .attr("opacity", value ? 0.9 : 0.05)
+        .attr("opacity", value ? 0.9 : 0.03)
         .attr("stroke-width", value ? 3.0 : 1.5)
         .raise();
     airportDOMIndex[id].label
@@ -68,9 +67,10 @@ async function plotAirports() {
         .join("p")
         .each(function(airportDatum) {
             // Flight connections
+            
             const connections = map.select(".connections").append("g");
             connections
-                .attr("opacity", 0.05)
+                .attr("opacity", 0.03)
                 .selectAll("path")
                 .data(conn_index[airportDatum.id])
                 .join("path")
@@ -83,11 +83,11 @@ async function plotAirports() {
                 })
                 .attr("stroke", d => redBlue(d.delayfrac))
                 .each(function(flightDatum, idx, nodes) {
-                    const margin = 4;
                     const oport = lookup[airportDatum.id];
                     const dport = lookup[flightDatum.destId];
 
                     // Individual Path labels
+                    const margin = 4;
                     const pathLabel = map.select(".labels").append("g")
                         .attr("class", "hoverdata")
                         .attr("visibility", "hidden")
@@ -96,7 +96,7 @@ async function plotAirports() {
                         .attr("x", 0).attr("y", 0)
                     text.append("tspan")
                         .attr("x", 0).attr("dy", "1.0em")
-                        .text(`${airportDatum.code} -> ${lookup[flightDatum.destId].code}`);
+                        .text(`${airportDatum.code} → ${lookup[flightDatum.destId].code}`);
                     const {width: bbwidth, height: bbheight} = pathLabel.node().getBBox();
                     pathLabel.insert("rect", ":first-child")
                         .attr("x", -margin)
@@ -177,24 +177,25 @@ async function plotAirports() {
                         .join(
                             enter => {
                                 let tr = enter.append("tr");
+                                tr.attr("title", d => lookup[d.destId].dispName);
                                 tr.append("td")
                                     .text(d => lookup[d.destId].code)
                                 let val = tr.append("td")
+                                    .attr("width", 110);
                                 val.append("div")
                                     .attr("class", "inlinebar")
                                     .style("width", d => 110 * d.delayfrac)
-                                    .style("background-color", d => redBlue(d.delayfrac));
-                                val.append("div")
-                                    .style("display", "inline-block")
+                                    .style("background-color", d => redBlue(d.delayfrac))
+                                    .style("margin-left", "4px");
+                                tr.append("td")
                                     .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
                                 return tr;
                             }, 
                             update => {
-                                const td = update.select(":last-child")
-                                td.select(":first-child")
+                                update.select(":nth-child(2)").select("div")
                                     .style("width", d => 110 * d.delayfrac)
                                     .style("background-color", d => redBlue(d.delayfrac));
-                                td.select(":last-child")
+                                update.select(":nth-child(3)")
                                     .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
                                 return update;
                             }
