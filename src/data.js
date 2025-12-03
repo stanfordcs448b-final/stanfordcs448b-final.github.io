@@ -67,7 +67,7 @@ export const airlinedata = d3.csv("../data/airline_cts.csv",
             cancelled: +d['cancelled'],
             delayed: +d['delayed'],
             total: +d['total'],
-            carrier: d['carrier']
+            key: d['carrier']
         };
         return b;
     }
