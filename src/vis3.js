@@ -1,3 +1,4 @@
+import { get } from "browser-sync";
 import { 
     airportdata, 
     airlinenames, 
@@ -15,13 +16,12 @@ import { redBlue } from "./util.js";
 const container = d3.select('#container3')
 const canvas = d3.select("#canvas");
 
-const color = ['#1459D9', '#daa520'];
 const width = +canvas.attr("width");
 const height = +canvas.attr("height");
 const marginTop = 100;
-const marginRight = 100;
+const marginRight = 20;
 const marginBottom = 50;
-const marginLeft = 20;
+const marginLeft = 100;
 const margin = {marginTop, marginRight, marginBottom, marginLeft};
 const barSize = 10;
 
@@ -45,19 +45,43 @@ const xscale = d3.scaleLinear()
 
 async function drawGraph(newData) {
     let table = await newData;
+
+    console.log(data_key);
+    let suggestion = d3.select('#suggestionsInput').property("value");
+    console.log(suggestion);
+
+    let data_dict;
+    let row_found = false;
+    if(data_key == "dsAirline") {
+        data_dict = airline_dict;
+        let get_row_id = reverseDict(airlinenames);
+        if(suggestion in get_row_id) {
+            let id = get_row_id[suggestion]
+            // let row = airline_dict[id];
+            console.log('row');
+        }
+    }
+
+
     canvas.selectAll("#leftbar").remove();
     let rows_to_graph = [table[0], table[1]];
+    let row_names = ["0", "1"];
+
     rows_to_graph.push(overall_dict)
+    row_names.push('All flights')
+
+
     const labels = ['cancelled', 'delayed', 'on time'];
     const colors = [redBlue(1.0), redBlue(0.6), redBlue(0.1)];
+    console.log(colors);
 
-    
+    let axis_g = canvas.append('g')
+        .attr('transform', `translate(0, 90)`)
+        .call(d3.axisTop(xscale.copy().range([marginLeft, width - marginRight])));
 
-    canvas.append('g')
-        .attr('transform', `translate(10, ${height - margin.bottom})`)
-        .call(d3.axisBottom(xscale.copy().range([marginLeft, width - marginRight])));
+    axis_g.selectAll("path").remove();
 
-    const barHeight = 30;
+    const barHeight = 20;
     let key_top = marginTop + rows_to_graph.length * barHeight * 1.5 + 10;
     canvas.append('text')
         .text(labels[0])
@@ -68,13 +92,13 @@ async function drawGraph(newData) {
     canvas.append('text')
         .text(labels[1])
         .attr('x', marginLeft + 30)
-        .attr('y', key_top + barHeight * 0.5)
+        .attr('y', key_top + 15)
         .attr('fill', colors[1]);
 
     canvas.append('text')
         .text(labels[2])
         .attr('x', marginLeft + 60)
-        .attr('y', key_top + barHeight)
+        .attr('y', key_top + 30)
         .attr('fill', colors[2]);
     
 
@@ -85,7 +109,6 @@ async function drawGraph(newData) {
             row['delayed'], 
             row['total'] - (row['cancelled'] + row['delayed'])
         ];
-        console.log(row);
 
         // populate information about the stacked bars
         let bars_x = [0, row['cancelled'], row['delayed']];
@@ -96,13 +119,12 @@ async function drawGraph(newData) {
         }
         bars_x.push(1);
         
-
+        const y =  marginTop + row_idx * barHeight * 1.5;
         for(let i = 0; i < bars_x.length - 1; i++) {
             const rInt = Math.floor(i / 3 * 255);
             const rgbString = colors[i];
             
             const x = xscale(1 - bars_x[i]);
-            const y =  marginTop + row_idx * barHeight * 1.5;
             const width = xscale(1 - bars_x[i + 1]) - xscale(1 - bars_x[i]);
 
             const rect = canvas.append("rect")
@@ -112,8 +134,8 @@ async function drawGraph(newData) {
                 .attr("width", width)
                 .attr("height", barHeight)
                 .attr("fill", rgbString)
-                .attr("rx", 2)
-                .attr("ry", 2)
+                .attr("rx", 0)
+                .attr("ry", 0)
                 .on('mouseover', function (event, d) { // Handle 'mouseover' events
                     const group = canvas.append('g')
                         .attr('class', 'hoverdata');
@@ -135,6 +157,11 @@ async function drawGraph(newData) {
                     canvas.selectAll('.hoverdata').remove()    // Remove all ptLabels
                 });
         }
+        let g = canvas.append("g");
+        let t = g.append('text').text(row_names[row_idx]);
+        const bbox = g.node().getBBox();
+        t.attr("x", marginLeft - bbox.width - 5).attr("y", y + barHeight * 0.5 + bbox.height * 0.3);
+        
     }
 }
 
