@@ -3,8 +3,8 @@ body {
 }
 
 rect {
-  rx: 2;
-  ry: 2;
+  rx: 2px;
+  ry: 2px;
 }
 
 #container1, #container3 {
@@ -92,4 +92,17 @@ rect {
 .connections path:hover {
   stroke-width: 5.0;
   opacity: 1.0;
+}
+
+.ptLabel3 {    
+  fill: white;
+  font-size: 0.75em;
+  fill-opacity: 1.0;
+}
+.ptLabel3 rect {
+  rx: 2px;
+  ry: 2px;
+}
+.ptLabel3 text {
+  fill: black;
 }

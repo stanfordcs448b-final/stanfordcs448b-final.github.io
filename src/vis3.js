@@ -16,9 +16,9 @@ const canvas = d3.select("#canvas");
 const color = ['#1459D9', '#daa520'];
 const width = +canvas.attr("width");
 const height = +canvas.attr("height");
-const marginTop = 20;
-const marginRight = 20;
-const marginBottom = 20;
+const marginTop = 50;
+const marginRight = 50;
+const marginBottom = 50;
 const marginLeft = 50;
 const margin = {marginTop, marginRight, marginBottom, marginLeft};
 const barSize = 10;
@@ -53,23 +53,44 @@ async function drawGraph(newData) {
         bars_y[i] = c_sum / overall_dict['total'];
     }
     bars_y.push(1);
-    const labels = ['cancelled', 'delayed', 'on time']
+    const labels = ['cancelled', 'delayed', 'on time'];
+    const colors = ['black', '#daa520', '#1459D9'];
 
     for(let i = 0; i < bars_y.length - 1; i++) {
         const rInt = Math.floor(i / 3 * 255);
-        const rgbString = `rgb(${rInt}, ${255 - rInt}, ${rInt})`;
+        const rgbString = colors[i];
         const y = yscale(bars_y[i + 1]);
         const height = yscale(bars_y[i]) - yscale(bars_y[i + 1]);
+
+        const barWidth = 50;
 
         canvas.append("rect")
             .attr("class", "leftbar")
             .attr("x", marginLeft)
             .attr("y", y)
-            .attr("width", 50)
+            .attr("width", barWidth)
             .attr("height", height)
             .attr("fill", rgbString)
             .attr("rx", 2)
-            .attr("ry", 2);
+            .attr("ry", 2)
+            .on('mouseover', function (event, d) { // Handle 'mouseover' events
+                const group = canvas.append('g')
+                .attr('class', 'ptLabel3')
+                .attr('transform',
+                    `translate(${marginLeft + barWidth} ${y + height / 2})`
+                );
+                const text = group.append("text").attr("x", 0).attr("y", 0);         // add text element into group
+                text.append("tspan").attr("x", 0).attr("dy", "1.2em").text(labels[i]); // add text spans into text, with line spacing `dy`
+                const bbox = group.node().getBBox();
+                group.insert('rect', ':first-child') // create background rectangle
+                .attr("x", -2)
+                .attr("y",  2)
+                .attr("width", bbox.width + 4)
+                .attr("height", bbox.height + 4);
+            })
+            .on('mouseout', function(event, d) {
+                canvas.selectAll('.ptLabel3').remove()    // Remove all ptLabels
+            });;
     }
 }
 
