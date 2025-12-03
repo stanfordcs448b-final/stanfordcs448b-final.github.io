@@ -27,6 +27,13 @@
 .sidebar .inlinebar {
   display: inline-block;
   height: 1em;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.sidebar table {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .container3 {
@@ -52,7 +59,7 @@
 }
 
 .hoverdata rect {
-  fill: #eee;
+  fill: #eeeeeec4;
   rx: 4px;
   ry: 4px;
 }

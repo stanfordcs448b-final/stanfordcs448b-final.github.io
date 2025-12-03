@@ -31,7 +31,8 @@ def main():
     flight_df = pd.concat(
         pd.read_csv(csv, dtype=dataTypeOverrides, parse_dates=["FlightDate"]) 
         for csv in (Path(__file__).parent / "src").glob("On_Time_Reporting_*/*.csv")
-        if "2025_5" in str(csv) # uncomment for debugging
+        if "2024_" in str(csv)
+        # if "2025_5" in str(csv) # uncomment for debugging
     )
 
     # Process Times
