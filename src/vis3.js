@@ -40,6 +40,7 @@ async function drawGraph(newData) {
     canvas.selectAll(".leftbar").remove();
     canvas.selectAll(".barLabel").remove();
     canvas.selectAll(".key").remove();
+    canvas.selectAll(".axis").remove();
 
     let suggestion = d3.select('#suggestionsInput').property("value");
     console.log(suggestion);
@@ -148,6 +149,7 @@ async function drawGraph(newData) {
 
     let axis_g = canvas.append('g')
         .attr('transform', `translate(0, ${marginTop - 5})`)
+        .attr('class', 'axis')
         .call(d3.axisTop(xscale.copy().range([marginLeft, width - marginRight])));
 
     axis_g.selectAll("path").remove();
