@@ -43,7 +43,6 @@ async function drawGraph(newData) {
     canvas.selectAll(".axis").remove();
 
     let suggestion = d3.select('#suggestionsInput').property("value");
-    console.log(suggestion);
 
     let data_dict;
     let rows_to_graph = [];
@@ -91,7 +90,6 @@ async function drawGraph(newData) {
         data_dict = month_dict;
         let get_row_id = reverseArr(monthnames);
         if(monthnames.includes(suggestion)) {
-            console.log(suggestion);
             row_names.push(suggestion);
             let row = data_dict[get_row_id[suggestion] + 1];
             rows_to_graph.push(row);
@@ -110,7 +108,6 @@ async function drawGraph(newData) {
         data_dict = time_dict;
         let get_row_id = reverseArr(timenames);
         if(timenames.includes(suggestion)) {
-            console.log(suggestion);
             row_names.push(suggestion);
             let row = data_dict[get_row_id[suggestion]];
             rows_to_graph.push(row);
