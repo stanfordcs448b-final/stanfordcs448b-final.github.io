@@ -103,7 +103,7 @@ def main():
     )
     v1_delay_count = (
         flight_df
-        [flight_df["DepDelayMinutes"] > 0]
+        [(flight_df["DepDel15"] == 1) | (flight_df["Cancelled"] == 1)]
         .groupby(["OriginAirportID", "DestAirportID"])
         .size()
         .to_frame(name="delaycount")
@@ -117,6 +117,9 @@ def main():
             "DestAirportID": "destId",
         })
     )
+
+    # filter by routes with 5+ flights per year
+    v1_combined = v1_combined[v1_combined["count"] >= 5].reset_index()
 
     v1_combined.to_csv(Path(__file__).parents[1] / "src/data/v1_flights.csv", index=False)
 

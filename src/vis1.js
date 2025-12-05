@@ -57,56 +57,70 @@ function setVisible(id, value) {
 }
 
 async function plotAirports() {
+    // await our lookup table builds simultaneously
     const [lookup, conn_index] = await Promise.all([
         buildLookup(), 
         buildConnections(),
     ]);
 
+    const labelIndex = {};
+
+    // put a bunch of dummy elements in .d3cache that we will bind the data to.
+    // we will use functions like .each to actually create the DOM elements we want
     d3.select("#container1 .d3cache").selectAll("p")
         .data(await airportdata, d => d.id)
         .join("p")
         .each(function(airportDatum) {
-            // Flight connections
-            
-            const connections = map.select(".connections").append("g");
-            connections
+
+            // Flight route edges
+            const routeEdges = map.select(".connections").append("g");
+            routeEdges
                 .attr("opacity", 0.03)
                 .selectAll("path")
                 .data(conn_index[airportDatum.id])
                 .join("path")
-                .attr("d", flightDatum => {
+                .each(function(flightDatum) {
+                    // vars we need to reference multiple times
                     const oport = lookup[airportDatum.id];
                     const dport = lookup[flightDatum.destId];
-                    return `M ${oport.longpx} ${oport.latpx} `
-                         + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, `
-                         + `${dport.longpx} ${dport.latpx}`;
-                })
-                .attr("stroke", d => redBlue(d.delayfrac))
-                .each(function(flightDatum, idx, nodes) { // create edge labels
-                    const oport = lookup[airportDatum.id];
-                    const dport = lookup[flightDatum.destId];
-
-                    // Individual Path labels
-                    const pathLabel = map.select(".labels").append("g")
-                        .attr("class", "hoverdata")
-                        .attr("visibility", "hidden")
-                        .attr("transform", `translate(${(oport.longpx + dport.longpx) / 2},${(oport.latpx + dport.latpx) / 2})`)
-                    const text = pathLabel.append("text")
-                        .attr("x", 0).attr("y", 0)
-                    text.append("tspan")
-                        .attr("x", 0).attr("dy", "1.0em")
-                        .text(`${airportDatum.code} → ${lookup[flightDatum.destId].code}`);
                     
-                    d3.select(this).on("mouseover", function(_event, _data) {
-                        if (selectedAirport !== airportDatum.id) return;
+                    const margin = 4;
+                    /** @type {d3.Selection<SVGGElement, any, HTMLElement, any>}*/
+                    let label;
 
-                        pathLabel.attr("visibility", "visible");
-                    })
-                    .on("mouseout", function(_event, _data) {
-                        pathLabel.attr("visibility", "hidden");
-                    })
+                    d3.select(this)
+                        .attr("d",  // set route path
+                            `M ${oport.longpx} ${oport.latpx} `
+                            + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, `
+                            + `${dport.longpx} ${dport.latpx}`
+                        )
+                        .attr("stroke", redBlue(flightDatum.delayfrac))
+                        .on("mouseover", function() {
+                            if (selectedAirport !== airportDatum.id) return;
+                            
+                            // Draw label
+                            label = map.select(".labels").append("g")
+                                .attr("class", "hoverdata")
+                                .attr("transform", `translate(${(oport.longpx + dport.longpx) / 2},${(oport.latpx + dport.latpx) / 2})`)
+                            const text = label.append("text")
+                                .attr("x", 0).attr("y", 0)
+                            text.append("tspan")
+                                .attr("x", 0).attr("dy", "1.0em")
+                                .text(`${airportDatum.code} → ${lookup[flightDatum.destId].code}`);
+                            
+                            // draw label background
+                            const {width, height} = label.node().getBBox();
+                            label.insert("rect", ":first-child")
+                                .attr("x", -margin)
+                                .attr("y", -margin)
+                                .attr("width", width + 2 * margin)
+                                .attr("height", height + 2 * margin);
+                            console.log(label);
+                        })
+                        .on("mouseout", function() {
+                            label?.remove();
+                        });
                 });
-            
 
             // Airport labels
             const offset = 12;
@@ -124,25 +138,27 @@ async function plotAirports() {
             //     .text(ad.code);
 
 
-            airportDOMIndex[airportDatum.id] = {connections, label: airportLabel};
+            airportDOMIndex[airportDatum.id] = {connections: routeEdges, label: airportLabel};
             
             // Airport dots
             const airport = map.select(".airports").append("circle");
             airport
                 .attr("transform", `translate(${airportDatum.longpx},${airportDatum.latpx})`)
                 .attr("r", _d => 5)
-            .on("mouseover", function(_event, _data) {
-                setVisible(airportDatum.id, true);
-            })
-            .on("mouseout", function(_event, _data) {
-                if (selectedAirport !== airportDatum.id) {
-                    setVisible(airportDatum.id, false);
-                }
-            })
-            .on("click", function(_event, _data) {
-                if (selectedAirport === airportDatum.id) {
-                    selectedAirport = null;
-                } else {
+                .on("mouseover", function(_event, _data) {
+                    setVisible(airportDatum.id, true);
+                })
+                .on("mouseout", function(_event, _data) {
+                    if (selectedAirport !== airportDatum.id) {
+                        setVisible(airportDatum.id, false);
+                    }
+                })
+                .on("click", function(_event, _data) {
+                    if (selectedAirport === airportDatum.id) {
+                        selectedAirport = null;
+                        return;
+                    }
+
                     if (selectedAirport !== null) {
                         setVisible(selectedAirport, false);
                     }
@@ -187,19 +203,18 @@ async function plotAirports() {
                                 return update;
                             }
                         );
-                }
-            });
+                });
         });
     
-    // add backgrounds to all labels
+    // add backgrounds to airport labels
     const margin = 4;
     map.select(".labels").selectAll("g")
         .each(function() {
             /** @type {d3.Selection<SVGGElement, any, HTMLElement, any>} */
             // @ts-ignore
-            const pathLabel = d3.select(this);
-            const {width, height} = pathLabel.node().getBBox();
-            pathLabel.insert("rect", ":first-child")
+            const label = d3.select(this);
+            const {width, height} = label.node().getBBox();
+            label.insert("rect", ":first-child")
                 .attr("x", -margin)
                 .attr("y", -margin)
                 .attr("width", width + 2 * margin)
