@@ -121,6 +121,7 @@ async function drawGraph(newData) {
                 rows_to_graph.push(row)
             }
         }
+        console.log(rows_to_graph);
     }
     
     if(data_key == "dsTime") {
@@ -138,16 +139,19 @@ async function drawGraph(newData) {
     // Declare the y (vertical position) scale.
     const xscale = d3.scaleLinear()
         .domain([0, 1])
-        .range([width - marginRight, marginLeft]);
+        .range([width * 0.5 - marginRight, marginLeft]);
     
 
     const labels = ['cancelled', 'delayed', 'on time'];
     const colors = [redBlue(1.0), redBlue(0.6), redBlue(0.1)];
 
+    let axis = d3.axisTop(xscale.copy().range([marginLeft, width * 0.5 - marginRight]));
+    axis.ticks(5).tickFormat(function(d) { return d * 100 + "%"; });
+
     let axis_g = canvas.append('g')
         .attr('transform', `translate(0, ${marginTop - 5})`)
         .attr('class', 'axis')
-        .call(d3.axisTop(xscale.copy().range([marginLeft, width - marginRight])));
+        .call(axis);
 
     axis_g.selectAll("path").remove();
 
