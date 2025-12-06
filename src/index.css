@@ -123,7 +123,7 @@ rect {
   ry: 2px;
 }
 
-#container1, #container3 {
+#container1, #container3, #container4 {
   overflow: hidden;
   position: relative;
 }
@@ -135,7 +135,7 @@ rect {
 }
 
 #container3 svg {
-    width: 80%;
+    width: 100%;
     height: auto;
     height: intrinsic;
 }
