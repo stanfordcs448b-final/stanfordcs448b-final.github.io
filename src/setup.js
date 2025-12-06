@@ -11,7 +11,7 @@ export async function setupMap(svgEl) {
     
         bggroup.append("path")
             .datum(topojson.feature(usmap, usmap.objects.nation))
-            .attr("fill", "#ddd")
+            .attr("fill", "#d4d4d4ff")
             .attr("d", path);
         
         bggroup.append("path")
