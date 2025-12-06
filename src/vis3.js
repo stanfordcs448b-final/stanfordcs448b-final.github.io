@@ -342,7 +342,7 @@ async function updateDataState() {
     }
 
     if(data_key === "dsDest") {
-        data = await origindata;
+        data = await destdata;
 
         // default value
         title_text_span.text("destination airport");
@@ -370,7 +370,7 @@ async function initData() {
     month_dict = pivotDataset(await monthdata);
     time_dict = pivotDataset(await timedata);
     origin_dict = pivotDataset(await origindata);
-    dest_dict = pivotDataset(await origindata);
+    dest_dict = pivotDataset(await destdata);
     overall_dict = (await overalldata)[0];
 }
 
