@@ -1,5 +1,115 @@
+:root {
+  --color-dark: #252525;
+  --color-light: #e6e6e6;
+  --color-banner: #dddddd;
+  --color-primary: #1a8fe3;
+  --size-step-0: clamp(1rem, calc(0.96rem + 0.22vw), 1.13rem);
+  --size-step-1: clamp(1.25rem, calc(1.16rem + 0.43vw), 1.5rem);
+  --size-step-2: clamp(1.56rem, calc(1.41rem + 0.76vw), 2rem);
+  --size-step-3: clamp(1.95rem, calc(1.71rem + 1.24vw), 2.66rem);
+  --size-step-4: clamp(2.44rem, calc(2.05rem + 1.93vw), 3.55rem);
+}
+
+.flow > * + * {
+  margin-block-start: var(--flow-space, 1em);
+}
+
+:is(h1, h2, h3, blockquote) {
+  --flow-space: 1.5em;
+}
+
+:is(h1, h2, h3) + * {
+  --flow-space: 0.2em;
+}
+
 body {
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+  background: var(--color-light);
+  color: var(--color-dark);
+  padding: 8em;
+  font-family: Inter, 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: var(--size-step-0);
+  line-height: 1.5;
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  
+}
+
+.article {
+  max-width: 100ch;
+  margin-inline: auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Inter, sans-serif;
+  font-weight: 800;
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--size-step-4);
+}
+h2 {
+  font-size: var(--size-step-3);
+}
+h3 {
+  font-size: var(--size-step-2);
+}
+
+ul,
+ol {
+  padding-inline-start: 1em;
+}
+
+.inter-body {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+blockquote {
+  max-width: 50ch;
+}
+
+h1 {
+  max-width: 20ch;
+}
+
+h2,
+h3 {
+  max-width: 28ch;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+}
+
+a {
+  color: currentColor;
+  text-decoration-color: var(--color-primary);
+  text-decoration-thickness: 0.3ex;
+  text-underline-offset: 0.3ex;
+}
+
+
+img,
+picture,
+svg {
+  max-width: 100%;
+  display: block;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }
 
 rect {
@@ -25,7 +135,7 @@ rect {
 }
 
 #container1 .sidebar {
-  background-color: lightgray;
+  background-color: var(--color-banner);
   float: inline-end;
   height: 100%;
   position: absolute;
@@ -69,12 +179,12 @@ rect {
 }
 
 .hoverdata text {
-  fill: black;
+  fill: var(--color-dark);
   font-size: 1.0em;
 }
 
 .hoverdata rect {
-  fill: #eeeeeec4;
+  fill: var(--color-light);
   rx: 4px;
   ry: 4px;
 }
@@ -82,7 +192,7 @@ rect {
 .airports {
   fill: brown;
   fill-opacity: 0.5;
-  stroke: white;
+  stroke: var(--color-light);
   stroke-width: 0.5;
   z-index: 80;
 }
@@ -97,7 +207,7 @@ rect {
 
 .connections {
   fill: none;
-  stroke: #444;
+  stroke: var(--color-dark);
   stroke-width: 1.5;
 }
 .connections path:hover {
