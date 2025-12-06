@@ -2,7 +2,10 @@ import {
     origindata,
 } from "./data.js";
 
-import { redBlue } from "./util.js";
+import { 
+    redBlue,
+    pivotDataset
+} from "./util.js";
 
 const container = d3.select('#container4')
 const graphCanvas = d3.select("#graphCanvas");
@@ -20,8 +23,6 @@ let data;
 let data_dict;
 
 async function drawGraph() {
-    console.log(redBlue(0.1));
-
     const barHeight = 20;
     const barSpacing = 1.5;
     graphCanvas.attr('viewBox', '0 0 1000 ' + height);
@@ -57,7 +58,7 @@ async function drawGraph() {
         .attr("x2", xscale(1000000))
         .attr("y2", yscale(0.2226))
         .attr("stroke", redBlue(1.0))
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 2.5)
         .attr("stroke-dasharray", "8");
 
   // Add dots
@@ -94,6 +95,17 @@ async function drawGraph() {
 
     graphCanvas.selectAll(".tick text").style("font-size", "20px");
 
+    // important airport names
+    for(let airport of ["MDW", "BWI", "HNL", "ATL", "DFW"]) {
+       let d = data_dict[airport];
+        graphCanvas.append('text')
+        .text(airport)
+        .attr("x", xscale(d['total']) + 8)
+        .attr("y", yscale(d['delayed'] / d['total']) + 7)
+        .attr("font-size", "18px");
+    }
+    
+
     // title
     graphCanvas
         .append('text')
@@ -124,6 +136,7 @@ async function drawGraph() {
 
 export async function plotPoints() {
     data = await origindata;
+    data_dict = pivotDataset(data);
 
     // generate initial legend
     drawGraph();
