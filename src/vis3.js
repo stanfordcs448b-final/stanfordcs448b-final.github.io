@@ -7,18 +7,23 @@ import {
     timenames, 
     timedata,
     origindata,
+    destdata,
     overalldata
 } from "./data.js";
 
-import { redBlue } from "./util.js";
+import { 
+    redBlue, 
+    reverseArr, 
+    reverseDict 
+} from "./util.js";
 
 const container = d3.select('#container3')
 const canvas = d3.select("#canvas");
 
 const width = +canvas.attr("width");
-const height = +canvas.attr("height");
+let height = +canvas.attr("height");
 const marginTop = 50;
-const marginRight = 20;
+const marginRight = 50;
 const marginBottom = 50;
 let marginLeft = 100;
 const margin = {marginTop, marginRight, marginBottom, marginLeft};
@@ -27,6 +32,7 @@ const barSize = 10;
 let airline_dict;
 let month_dict;
 let origin_dict;
+let dest_dict;
 let time_dict;
 let overall_dict;
 
@@ -43,6 +49,10 @@ async function drawGraph(newData) {
     canvas.selectAll(".axis").remove();
 
     let suggestion = d3.select('#suggestionsInput').property("value");
+    if(suggestion != "")
+        d3.select("#factorName").text(suggestion);
+    if(suggestion == "MDW")
+        d3.select("#factorName").text(suggestion + " really");
 
     let data_dict;
     let rows_to_graph = [];
@@ -69,6 +79,29 @@ async function drawGraph(newData) {
     if(data_key == "dsOrigin") {
         data_dict = origin_dict;
         if(suggestion in data_dict) {
+            console.log(suggestion);
+            d3.select(".airportInTitle").text(suggestion);
+            row_names.push(suggestion);
+            let row = data_dict[suggestion];
+            rows_to_graph.push(row);
+            rows_to_graph.push(overall_dict)
+            row_names.push('All flights')
+        }
+        else {
+            let i = 0;
+            for(let id of Object.keys(data_dict)) {
+                i++
+                row_names.push(id);
+                let row = data_dict[id];
+                rows_to_graph.push(row)
+                if(i > 15) break;
+            }
+        }
+    }
+    if(data_key == "dsDest") {
+        data_dict = dest_dict;
+        if(suggestion in data_dict) {
+            d3.select(".airportInTitle").text(suggestion);
             row_names.push(suggestion);
             let row = data_dict[suggestion];
             rows_to_graph.push(row);
@@ -125,11 +158,19 @@ async function drawGraph(newData) {
     }
     
     if(data_key == "dsTime") {
-        marginLeft = 200;
+        marginLeft = 250;
     }
     else {
         marginLeft = 100;
     }
+
+    const barHeight = 20;
+    const barSpacing = 1.5;
+    let key_top = marginTop + rows_to_graph.length * barHeight * barSpacing + 15;
+    height = key_top + 75;
+    canvas.attr('height', height);
+    canvas.attr('viewBox', '0 0 1000 ' + height);
+    
 
     // Declare the y (vertical position) scale.
     const yscale = d3.scaleLinear()
@@ -139,13 +180,13 @@ async function drawGraph(newData) {
     // Declare the y (vertical position) scale.
     const xscale = d3.scaleLinear()
         .domain([0, 1])
-        .range([width * 0.5 - marginRight, marginLeft]);
+        .range([width - marginRight, marginLeft]);
     
 
     const labels = ['cancelled', 'delayed', 'on time'];
-    const colors = [redBlue(1.0), redBlue(0.6), redBlue(0.1)];
+    const colors = [redBlue(1.0), redBlue(0.8), redBlue(0.1)];
 
-    let axis = d3.axisTop(xscale.copy().range([marginLeft, width * 0.5 - marginRight]));
+    let axis = d3.axisTop(xscale.copy().range([marginLeft, width - marginRight]));
     axis.ticks(5).tickFormat(function(d) { return d * 100 + "%"; });
 
     let axis_g = canvas.append('g')
@@ -154,10 +195,9 @@ async function drawGraph(newData) {
         .call(axis);
 
     axis_g.selectAll("path").remove();
-
-    const barHeight = 15;
-    const barSpacing = 1.5;
-    let key_top = marginTop + rows_to_graph.length * barHeight * barSpacing + 10;
+    axis_g.selectAll(".tick text").style("font-size", "20px");
+    
+    
     canvas.append('text')
         .attr('class', 'key')
         .text(labels[0])
@@ -168,16 +208,17 @@ async function drawGraph(newData) {
     canvas.append('text')
         .attr('class', 'key')
         .text(labels[1])
-        .attr('x', marginLeft + 30)
-        .attr('y', key_top + 15)
+        .attr('x', marginLeft + 40)
+        .attr('y', key_top + 20)
         .attr('fill', colors[1]);
 
     canvas.append('text')
         .attr('class', 'key')
         .text(labels[2])
-        .attr('x', marginLeft + 60)
-        .attr('y', key_top + 30)
+        .attr('x', marginLeft + 80)
+        .attr('y', key_top + 40)
         .attr('fill', colors[2]);
+    
     
 
     for(let row_idx = 0; row_idx < rows_to_graph.length; row_idx++) {
@@ -293,7 +334,20 @@ async function updateDataState() {
 
         // default value
         title_text_span.text("origin airport");
-        d3.select('#suggestionsInput').attr("value", "SFO");
+        d3.select('#suggestionsInput').attr("value", "MDW");
+        d3.select('#suggestions').selectChildren().remove();
+        for(let row of data) {
+            let option = d3.select('#suggestions').append('option');
+            option.attr('value', row['key']);
+        }
+    }
+
+    if(data_key === "dsOrigin") {
+        data = await destdata;
+
+        // default value
+        title_text_span.text("origin airport");
+        d3.select('#suggestionsInput').attr("value", "MDW");
         d3.select('#suggestions').selectChildren().remove();
         for(let row of data) {
             let option = d3.select('#suggestions').append('option');
@@ -317,22 +371,6 @@ function pivotDataset(data) {
         }, {});;
 }
 
-function reverseDict(json) {
-    var ret = {};
-    for(var key in json) {
-        ret[json[key]] = key;
-    }
-    return ret;
-}
-
-function reverseArr(arr) {
-    var ret = {};
-    for(let i = 0; i < arr.length; i++) {
-        ret[arr[i]] = i;
-    }
-    return ret;
-}
-
 async function initData() {
     let unsorted_airline_dict = pivotDataset(await airlinedata);
     airline_dict = Object.keys(unsorted_airline_dict)
@@ -346,6 +384,7 @@ async function initData() {
     month_dict = pivotDataset(await monthdata);
     time_dict = pivotDataset(await timedata);
     origin_dict = pivotDataset(await origindata);
+    dest_dict = pivotDataset(await destdata);
     overall_dict = (await overalldata)[0];
 }
 

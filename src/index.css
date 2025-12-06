@@ -77,7 +77,7 @@ blockquote {
 }
 
 h1 {
-  max-width: 20ch;
+  max-width: 30ch;
 }
 
 h2,
@@ -112,12 +112,18 @@ select {
   font: inherit;
 }
 
+.caption {
+  font-weight: 300;
+  font-style: italic;
+  font-size: 18;
+}
+
 rect {
   rx: 2px;
   ry: 2px;
 }
 
-#container1, #container3 {
+#container1, #container3, #container4 {
   overflow: hidden;
   position: relative;
 }
@@ -129,7 +135,7 @@ rect {
 }
 
 #container3 svg {
-    width: 80%;
+    width: 100%;
     height: auto;
     height: intrinsic;
 }
