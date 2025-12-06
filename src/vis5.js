@@ -18,8 +18,8 @@ import {
     pivotDataset
 } from "./util.js";
 
-const container = d3.select('#container3')
-const canvas = d3.select("#canvas");
+const container = d3.select('#container5')
+const canvas = d3.select("#canvas5");
 
 const width = +canvas.attr("width");
 let height = +canvas.attr("height");
@@ -49,11 +49,11 @@ async function drawGraph(newData) {
     canvas.selectAll(".key").remove();
     canvas.selectAll(".axis").remove();
 
-    let suggestion = d3.select('#suggestionsInput').property("value");
+    let suggestion = d3.select('#suggestionsInput5').property("value");
     if(suggestion != "")
-        d3.select("#factorName").text(suggestion);
+        d3.select("#factorName5").text(suggestion);
     if(suggestion == "MDW")
-        d3.select("#factorName").text(suggestion);
+        d3.select("#factorName5").text(suggestion);
 
     let data_dict;
     let rows_to_graph = [];
@@ -285,45 +285,45 @@ async function drawGraph(newData) {
 
 async function updateDataState() {
     let data;
-    data_key = d3.select("#firstDropdown").property('value');
-    let title_text_span = d3.select("#factorName");
+    data_key = d3.select("#firstDropdown5").property('value');
+    let title_text_span = d3.select("#factorName5");
 
     // case Airline selected
     if(data_key === "dsAirline") {
         data = await airlinedata;
         // default value
-        d3.select('#suggestionsInput').attr("value", "");
-        title_text_span.text("airline");
+        d3.select('#suggestionsInput5').attr("value", "");
+        title_text_span.text("with each airline");
 
         // clear suggestions
-        d3.select('#suggestions').selectChildren().remove();
+        d3.select('#suggestions5').selectChildren().remove();
         for(let key of Object.keys(airline_dict)) {
             let row = airline_dict[key];
-            let option = d3.select('#suggestions').append('option');
+            let option = d3.select('#suggestions5').append('option');
             option.attr('value', airlinenames[row['key']]);
         }
     }
     // case Month selected
     if(data_key === "dsMonth") {
         data = await monthdata;
-        title_text_span.text("month");
-        d3.select('#suggestionsInput').attr("value", "");
-        d3.select('#suggestions').selectChildren().remove();
+        title_text_span.text("in each month");
+        d3.select('#suggestionsInput5').attr("value", "");
+        d3.select('#suggestions5').selectChildren().remove();
         for(let i = 1; i <= 12; i++) {
             let row = month_dict[i];
-            let option = d3.select('#suggestions').append('option');
+            let option = d3.select('#suggestions5').append('option');
             option.attr('value', monthnames[row.key - 1]);
         }
     }
     // case Time selected
     if(data_key === "dsTime") {
         data = await timedata;
-        title_text_span.text("time of day");
-        d3.select('#suggestionsInput').attr("value", "");
-        d3.select('#suggestions').selectChildren().remove();
+        title_text_span.text("at each time of day");
+        d3.select('#suggestionsInput5').attr("value", "");
+        d3.select('#suggestions5').selectChildren().remove();
         for(let i = 0; i <= 3; i++) {
             let row = time_dict[i];
-            let option = d3.select('#suggestions').append('option');
+            let option = d3.select('#suggestions5').append('option');
             option.attr('value', timenames[row.key]);
         }
     }
@@ -332,24 +332,24 @@ async function updateDataState() {
         data = await origindata;
 
         // default value
-        title_text_span.text("origin airport");
-        d3.select('#suggestionsInput').attr("value", "MDW");
-        d3.select('#suggestions').selectChildren().remove();
+        title_text_span.text("at each origin airport");
+        d3.select('#suggestionsInput5').attr("value", "MDW");
+        d3.select('#suggestions5').selectChildren().remove();
         for(let row of data) {
-            let option = d3.select('#suggestions').append('option');
+            let option = d3.select('#suggestions5').append('option');
             option.attr('value', row['key']);
         }
     }
 
-    if(data_key === "dsDest") {
-        data = await origindata;
+    if(data_key === "dsOrigin") {
+        data = await destdata;
 
         // default value
-        title_text_span.text("destination airport");
-        d3.select('#suggestionsInput').attr("value", "MDW");
-        d3.select('#suggestions').selectChildren().remove();
+        title_text_span.text("at each destination airport");
+        d3.select('#suggestionsInput5').attr("value", "MDW");
+        d3.select('#suggestions5').selectChildren().remove();
         for(let row of data) {
-            let option = d3.select('#suggestions').append('option');
+            let option = d3.select('#suggestions5').append('option');
             option.attr('value', row['key']);
         }
     }
@@ -370,19 +370,20 @@ async function initData() {
     month_dict = pivotDataset(await monthdata);
     time_dict = pivotDataset(await timedata);
     origin_dict = pivotDataset(await origindata);
-    dest_dict = pivotDataset(await origindata);
+    dest_dict = pivotDataset(await destdata);
     overall_dict = (await overalldata)[0];
 }
 
-export async function plotBars() {
+export async function plotBars5() {
     await initData();
 
     // generate initial legend
     let data = updateDataState();
+    console.log(data);
     drawGraph(data);
 
     // handle on click event
-    d3.select('#menuDiv')
+    d3.select('#menuDiv5')
     .on('change', function() {
         data = updateDataState();
         drawGraph(data);
