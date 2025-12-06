@@ -4,12 +4,17 @@
     <script defer src="http://d3js.org/topojson.v1.min.js"></script>
     <script type="module" src="index.js"></script>
     <link rel="stylesheet" href="index.css"></style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <div>
-        <h1>Flight Delays</h1>
-        <h3>Scott Milner, Isaac Criddle</h3>
+    <div class="article">
+        <h1>What's the deal with <span>MDW</span>?</h1>
+        <h3>Scott Milner</h3>
+        <h3>Isaac Criddle</h3>
         <p>Explore flight delays and their causes from 2024!</p>
     </div>
     <div id="container1">
@@ -33,7 +38,7 @@
     <div id="container2">
     </div>
     <div id="container3">
-        <h4>How does the <span id="factorName">origin airport</span> affect your delays?</h4>
+        <h4 class="article">How does the <span id="factorName">origin airport</span> affect your delays?</h4>
         <div id="menuDiv">
             <select id="firstDropdown">
                 <option value="dsAirline">Airline</option>
