@@ -52,7 +52,7 @@ async function drawGraph(newData) {
     if(suggestion != "")
         d3.select("#factorName").text(suggestion);
     if(suggestion == "MDW")
-        d3.select("#factorName").text(suggestion + " really");
+        d3.select("#factorName").text(suggestion);
 
     let data_dict;
     let rows_to_graph = [];
