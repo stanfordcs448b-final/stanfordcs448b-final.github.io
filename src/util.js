@@ -26,10 +26,11 @@ export function reverseDict(json) {
 }
 
 export function reverseArr(arr) {
-    var ret = {};
+    let ret = {};
     for(let i = 0; i < arr.length; i++) {
         ret[arr[i]] = i;
     }
+    
     return ret;
 }
 
