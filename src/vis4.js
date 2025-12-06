@@ -17,6 +17,7 @@ const margin = {marginTop, marginRight, marginBottom, marginLeft};
 const barSize = 10;
 
 let data;
+let data_dict;
 
 async function drawGraph() {
     console.log(redBlue(0.1));

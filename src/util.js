@@ -32,3 +32,16 @@ export function reverseArr(arr) {
     }
     return ret;
 }
+
+export function pivotDataset(data) {
+    let obj = {};
+    for(let row of data) {
+        obj[row['key']] = { ...row };
+    }
+
+    return Object.keys(obj)
+        .reduce((out_obj, key) => {
+            out_obj[key] = obj[key];
+            return out_obj;
+        }, {});;
+}
