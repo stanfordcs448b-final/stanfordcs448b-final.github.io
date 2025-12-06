@@ -79,6 +79,8 @@ async function drawGraphs() {
         // .call(g => g.selectAll(".domain").remove());
 }
 
+let starterAirport;
+
 async function plotAirports() {
     map.select(".airports")
         .selectAll("circle")
@@ -114,6 +116,8 @@ async function plotAirports() {
             d3.select(this)
                 .on("mouseover", () => airportLabel.attr("visibility", "visible"))
                 .on("mouseout", () => airportLabel.attr("visibility", "hidden"));
+            
+            if (airportDatum.id === 13232) starterAirport = d3.select(this);
         });
     
     // add backgrounds to airport labels
@@ -134,5 +138,7 @@ async function plotAirports() {
 
 
 export async function main() {
-    return plotAirports();
+    return plotAirports().then(() => ["mouseover", "click"].forEach(
+            e => starterAirport.node().dispatchEvent(new Event(e))
+        ));
 }
