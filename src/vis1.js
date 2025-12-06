@@ -1,6 +1,8 @@
 import { airportdata } from "./data.js";
 import { redBlue } from "./util.js";
 
+const getColor = (val) => redBlue(val * 2.0);
+
 
 const map = d3.select("#container1 #map");
 const sidebar = d3.select("#container1 .sidebar")
@@ -63,8 +65,6 @@ async function plotAirports() {
         buildConnections(),
     ]);
 
-    const labelIndex = {};
-
     // put a bunch of dummy elements in .d3cache that we will bind the data to.
     // we will use functions like .each to actually create the DOM elements we want
     d3.select("#container1 .d3cache").selectAll("p")
@@ -94,7 +94,7 @@ async function plotAirports() {
                             + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 30}, `
                             + `${dport.longpx} ${dport.latpx}`
                         )
-                        .attr("stroke", redBlue(flightDatum.delayfrac))
+                        .attr("stroke", getColor(flightDatum.delayfrac))
                         .on("mouseover", function() {
                             if (selectedAirport !== airportDatum.id) return;
                             
@@ -188,7 +188,7 @@ async function plotAirports() {
                                 val.append("div")
                                     .attr("class", "inlinebar")
                                     .style("width", d => 110 * d.delayfrac)
-                                    .style("background-color", d => redBlue(d.delayfrac))
+                                    .style("background-color", d => getColor(d.delayfrac))
                                     .style("margin-left", "4px");
                                 tr.append("td")
                                     .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
@@ -197,7 +197,7 @@ async function plotAirports() {
                             update => {
                                 update.select(":nth-child(2)").select("div")
                                     .style("width", d => 110 * d.delayfrac)
-                                    .style("background-color", d => redBlue(d.delayfrac));
+                                    .style("background-color", d => getColor(d.delayfrac));
                                 update.select(":nth-child(3)")
                                     .text(d => `${(100 * d.delayfrac).toFixed(1)}% (${d.delaycount}/${d.count})`);
                                 return update;
