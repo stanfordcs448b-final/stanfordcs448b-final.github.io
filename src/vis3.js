@@ -18,7 +18,7 @@ const canvas = d3.select("#canvas");
 const width = +canvas.attr("width");
 const height = +canvas.attr("height");
 const marginTop = 50;
-const marginRight = 20;
+const marginRight = 50;
 const marginBottom = 50;
 let marginLeft = 100;
 const margin = {marginTop, marginRight, marginBottom, marginLeft};
@@ -125,7 +125,7 @@ async function drawGraph(newData) {
     }
     
     if(data_key == "dsTime") {
-        marginLeft = 200;
+        marginLeft = 250;
     }
     else {
         marginLeft = 100;
@@ -139,13 +139,13 @@ async function drawGraph(newData) {
     // Declare the y (vertical position) scale.
     const xscale = d3.scaleLinear()
         .domain([0, 1])
-        .range([width * 0.5 - marginRight, marginLeft]);
+        .range([width - marginRight, marginLeft]);
     
 
     const labels = ['cancelled', 'delayed', 'on time'];
-    const colors = [redBlue(1.0), redBlue(0.6), redBlue(0.1)];
+    const colors = [redBlue(1.0), redBlue(0.8), redBlue(0.1)];
 
-    let axis = d3.axisTop(xscale.copy().range([marginLeft, width * 0.5 - marginRight]));
+    let axis = d3.axisTop(xscale.copy().range([marginLeft, width - marginRight]));
     axis.ticks(5).tickFormat(function(d) { return d * 100 + "%"; });
 
     let axis_g = canvas.append('g')
@@ -293,7 +293,7 @@ async function updateDataState() {
 
         // default value
         title_text_span.text("origin airport");
-        d3.select('#suggestionsInput').attr("value", "SFO");
+        d3.select('#suggestionsInput').attr("value", "MDW");
         d3.select('#suggestions').selectChildren().remove();
         for(let row of data) {
             let option = d3.select('#suggestions').append('option');
