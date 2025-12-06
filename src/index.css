@@ -77,7 +77,7 @@ blockquote {
 }
 
 h1 {
-  max-width: 20ch;
+  max-width: 30ch;
 }
 
 h2,
@@ -110,6 +110,12 @@ button,
 textarea,
 select {
   font: inherit;
+}
+
+.caption {
+  font-weight: 300;
+  font-style: italic;
+  font-size: 15;
 }
 
 rect {

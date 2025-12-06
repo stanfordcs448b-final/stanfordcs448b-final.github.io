@@ -179,6 +179,34 @@ export const origindata = d3.csv("../data/origin_cts.csv",
     }
 );
 
+export const destdata = d3.csv("../data/dest_cts.csv", 
+    (d) => {
+        let b = {
+            1: +d[1],
+            2: +d[2],
+            3: +d[3],
+            4: +d[4],
+            5: +d[5],
+            6: +d[6],
+            7: +d[7],
+            8: +d[8],
+            9: +d[9],
+            10: +d[10],
+            11: +d[11],
+            12: +d[12],
+            13: +d[13],
+            14: +d[14],
+            15: +d[15],
+            16: +d[16],
+            cancelled: +d['cancelled'],
+            delayed: +d['delayed'],
+            total: +d['total'],
+            key: d['dest']
+        };
+        return b;
+    }
+);
+
 export const overalldata = d3.csv("../data/overall_cts.csv", 
     (d) => {
         let b = {

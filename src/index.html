@@ -12,9 +12,68 @@
 
 <body>
     <div class="article">
-        <h1>What's the deal with the delays at <span>MDW</span>?</h1>
-        <p style="font-weight: 700;">By Scott Milner and Isaac Criddle</p>
-        <p>Explore flight delays and their causes from 2024!</p>
+        <h1>How not to get stuck at <span class="airportInTitle">MDW</span></h1>
+        <h3>A data-driven guide</h3>
+        <p style="font-weight: 700;">Scott Milner and Isaac Criddle</p>
+        <p style="font-style: italic; font-weight: 300;">Explore flight delays and their causes!</p>
+        <p>
+            A few months ago, I (Isaac) bought tickets to fly from Salt Lake to Richmond to visit my parents.
+            After years spent in Utah Valley’s desert, I looked forward to the walks in my hometown’s forests, summer rains,
+            and Virginian oysters that characterize my hometown. My travels that day were supposed to be light, with just one small layover.
+            <br><br>
+            The airports had other plans for me. One slightly delayed flight led to a missed connection in Chicago,
+            sprints from terminal to service desk to terminal, hours on the phone, and ultimately the worst airport experience of my life.
+            Four airports and 21 hours later, I touched down in Norfolk’s small airport.
+            <br><br>
+            In my case, a 15 minute delay meant the difference between an 8 hour trip and a 21 hour trip.
+            <br><br>
+            In 2024, 1.4 million American domestic flights were delayed by at least 15 minutes.
+            21.7% of all domestic flights were either cancelled or delayed.
+            These delays alone cause around 185 million hours of wasted time a year,
+            just from people sitting in gates waiting for their flights to leave.
+            <br><br>
+            At least in my family, Chicago’s two main airports are legendary for their volatility.
+            We tell horror stories around the campfire about days lost to its endless delays and queues.
+        </p>
+        <br>
+        <br>
+    </div>
+    <div id="container3">
+        <h4 class="article">How does <span id="factorName">origin airport</span> compare?</h4>
+        <div id="canvasDiv">
+            <svg id="canvas" width="1000" height="500" viewbox="0 0 1000 500" background-color="lightblue">
+                <rect width="100%" height="100%" fill="#efeee9"/>
+            </svg>
+        </div>
+        <div id="menuDiv">
+            <select id="firstDropdown">
+                <option value="dsOrigin" selected="selected">Origin Airport</option>
+                <option value="dsDest">Destination Airport</option>
+                <option value="dsAirline">Airline</option>
+                <option value="dsTime">Time of Day</option> 
+                <option value="dsMonth">Month</option>
+            </select>
+            <datalist id="suggestions">
+            </datalist>
+            <input id="suggestionsInput" type="text" autoComplete="on" list="suggestions"/> 
+        </div>
+        <p class="Caption">Check out your own airport/airline/time of day/time of year!</p>
+    </div>
+    <div class="article">
+        <br>
+        <br>
+        <p>
+            Midway did only a little bit worse than the national average in 2024!
+            <br><br>
+            The worst large airport for delays was Baltimore/Washington International (BWI) with a whopping 29.4% delay rate,
+            followed closely by Dallas Fort Worth International (DFW) airport at 28.8%.
+            (For our purposes, we only count departure delays that take longer than 15 minutes).
+            <br><br>
+            If you’re planning around flight delays, other factors matter beyond your airport of origin.
+            Consider the destination airport. For instance,. 54.0% of 2024’s flights from BWI to Oakland were delayed,
+            but only 21.2% of the flights from Baltimore to San Jose were delayed, even though both destination airports are in the Bay area.</p>
+        <br>
+        <br>
     </div>
     <div id="container1">
         <svg id="map" width="975" height="610" viewbox="0 0 975 610">
@@ -34,26 +93,37 @@
         </div>
         <div class="d3cache" style="display: none;"></div>
     </div>
-    <div id="container2">
+    <div class="article">
+        <br>
+        <br>
+        <p>
+            Bigger airports have slightly more delays than smaller airports on average,
+            (<span style="font-family: 'Times New Roman', Times, serif; font-style: italic;">R</span> = 0.22),
+            so if you need to make a connecting flight during a busy time of the year,
+            it might be worth paying a little more for a ticket that avoids the largest airports. 
+        </p>
+        <br>
+        <br>
     </div>
-    <div id="container3">
-        <h4 class="article">How does the <span id="factorName">origin airport</span> affect your delays?</h4>
-        <div id="menuDiv">
-            <select id="firstDropdown">
-                <option value="dsAirline">Airline</option>
-                <option value="dsOrigin" selected="selected">Origin Airport</option>
-                <option value="dsTime">Time of Day</option> 
-                <option value="dsMonth">Month</option>
-            </select>
-            <datalist id="suggestions">
-            </datalist>
-            <input id="suggestionsInput" type="text" autoComplete="on" list="suggestions"/> 
-        </div>
-        <div id="canvasDiv">
-            <svg id="canvas" width="1000" height="500" viewbox="0 0 1000 500" background-color="lightblue">
-                <rect width="100%" height="100%" fill="#efeee9"/>
-            </svg>
-        </div>
+    <div id="container2">
+        <p style="font-style: italic;">&lt;insert dot plot of delay rate x size of airport&gt;</p>
+    </div>
+    <div class="article">
+        <br>
+        <br>
+        <p>
+            Delays often propagate–a late flight in the morning can cause another late afternoon flight.
+            Evening flights are more than twice as likely to be delayed as morning flights.
+            <br><br>
+            Once your flight’s been pushed back by 15 minutes, you can expect to be waiting for over an hour.
+            Not all delays are created equal; delays caused by weather average a 93 minute wait time, while security delays average 38 minutes.
+            <br><br>
+            [Are bigger airports better able to deal with late aircraft delays?]
+            <br><br>
+            [Are there more weather delays in coastal airports?]
+        </p>
+        <br>
+        <br>
     </div>
 </body>
 </html>
