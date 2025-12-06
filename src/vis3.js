@@ -11,7 +11,11 @@ import {
     overalldata
 } from "./data.js";
 
-import { redBlue } from "./util.js";
+import { 
+    redBlue, 
+    reverseArr, 
+    reverseDict 
+} from "./util.js";
 
 const container = d3.select('#container3')
 const canvas = d3.select("#canvas");
@@ -97,7 +101,6 @@ async function drawGraph(newData) {
     if(data_key == "dsDest") {
         data_dict = dest_dict;
         if(suggestion in data_dict) {
-            console.log(suggestion);
             d3.select(".airportInTitle").text(suggestion);
             row_names.push(suggestion);
             let row = data_dict[suggestion];
@@ -366,22 +369,6 @@ function pivotDataset(data) {
             out_obj[key] = obj[key];
             return out_obj;
         }, {});;
-}
-
-function reverseDict(json) {
-    var ret = {};
-    for(var key in json) {
-        ret[json[key]] = key;
-    }
-    return ret;
-}
-
-function reverseArr(arr) {
-    var ret = {};
-    for(let i = 0; i < arr.length; i++) {
-        ret[arr[i]] = i;
-    }
-    return ret;
 }
 
 async function initData() {

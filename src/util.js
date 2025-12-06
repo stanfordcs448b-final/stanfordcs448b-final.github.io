@@ -16,3 +16,19 @@ export const projection = function(coords) {
 }
 
 export const redBlue = val => d3.interpolateRdYlBu(1 - val);
+
+export function reverseDict(json) {
+    var ret = {};
+    for(var key in json) {
+        ret[json[key]] = key;
+    }
+    return ret;
+}
+
+export function reverseArr(arr) {
+    var ret = {};
+    for(let i = 0; i < arr.length; i++) {
+        ret[arr[i]] = i;
+    }
+    return ret;
+}
