@@ -14,7 +14,8 @@ import {
 import { 
     redBlue, 
     reverseArr, 
-    reverseDict 
+    reverseDict,
+    pivotDataset
 } from "./util.js";
 
 const container = d3.select('#container3')
@@ -354,19 +355,6 @@ async function updateDataState() {
     }
 
     return data;
-}
-
-function pivotDataset(data) {
-    let obj = {};
-    for(let row of data) {
-        obj[row['key']] = { ...row };
-    }
-
-    return Object.keys(obj)
-        .reduce((out_obj, key) => {
-            out_obj[key] = obj[key];
-            return out_obj;
-        }, {});;
 }
 
 async function initData() {
