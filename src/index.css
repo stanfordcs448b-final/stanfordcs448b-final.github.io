@@ -219,10 +219,10 @@ rect {
 }
 
 .airports {
-  fill: var(--deep-red);
+  /* fill: var(--deep-red); */
   fill-opacity: 0.5;
-  stroke: var(--color-light);
-  stroke-width: 0.5;
+  stroke: var(--color-dark);
+  stroke-width: 0.8;
   z-index: 80;
 }
 

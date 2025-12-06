@@ -27,17 +27,20 @@ async function buildLookup() {
     }, {}));
 }
 
-/** @returns {Promise<Record<number, {destId: number, count: number, delaycount: number, delayfrac: number}[]>>} */
+/** @returns {Promise<Record<number, {dests: {destId: number, count: number, delaycount: number, delayfrac: number}[], total_delays: number, total_flights: number}>>} */
 async function buildConnections() {
     return v1_flightdata.then(data => data.reduce((acc, row) => {
         if (!(row.originId in acc)) 
-            acc[row.originId] = [];
-        acc[row.originId].push({
+            acc[row.originId] = {dests: [], total_delays: 0, total_flights: 0};
+        
+        acc[row.originId].dests.push({
             destId: row.destId, 
             count: row.count, 
             delaycount: row.delaycount,
             delayfrac: row.delaycount / row.count,
         });
+        acc[row.originId].total_delays += row.delaycount;
+        acc[row.originId].total_flights += row.count;
         return acc;
     }, {}));
 }
@@ -51,28 +54,32 @@ let airportDOMIndex = {};
  * @param {boolean} value */
 function setVisible(id, value) {
     airportDOMIndex[id].connections
-        .attr("opacity", value ? 1.0 : 0.03)
+        .attr("opacity", value ? 0.8 : 0.03)
         .attr("stroke-width", value ? 4.0 : 1.5)
         .raise();
     airportDOMIndex[id].label
         .attr("visibility", value ? "visible" : "hidden");
 }
 
+/**
+ * 
+ * @param {{id: number, code: string, dispName: string, latpx: number, longpx: number}} airportDatum 
+ * @param {Record<number, {code: number, dispName: string, latpx: number, longpx: number}>} lookup 
+ * @param {Record<number, {dests: {destId: number, count: number, delaycount: number, delayfrac: number}[], total_delays: number, total_flights: number}>} conn_index 
+ */
 function updateSidebar(airportDatum, lookup, conn_index) {
     // Update sidebar
     sidebar.select("#airportname")
         .text(airportDatum.dispName);
 
-    let conn_data = conn_index[airportDatum.id];
-    const total_flights = conn_data.reduce((acc, path) => acc + path.count, 0);
-    const total_delays = conn_data.reduce((acc, path) => acc + path.delaycount, 0);
+    const { dests, total_delays, total_flights } = conn_index[airportDatum.id];
     sidebar.select("#summary")
         .text(`${total_delays} flights delayed of ${total_flights} total flights (${(100 * total_delays / total_flights).toFixed(1)})%`);
         
     const barWidth = 100;
     sidebar.select("#routetable")
         .selectAll("tr")
-        .data(conn_data.sort((a, b) => b.delayfrac - a.delayfrac), d => d.destId)
+        .data(dests.sort((a, b) => b.delayfrac - a.delayfrac), d => d.destId)
         .join(
             enter => {
                 let tr = enter.append("tr");
@@ -123,17 +130,18 @@ async function plotAirports() {
         .data(await airportdata, d => d.id)
         .join("p")
         .each(function(airportDatum) {
+            const {dests, total_flights, total_delays} = conn_index[airportDatum.id];
 
             // Flight route edges
             const routeEdges = map.select(".connections").append("g");
+            const oport = lookup[airportDatum.id];
             routeEdges
                 .attr("opacity", 0.03)
                 .selectAll("path")
-                .data(conn_index[airportDatum.id])
+                .data(dests)
                 .join("path")
                 .each(function(flightDatum) {
                     // vars we need to reference multiple times
-                    const oport = lookup[airportDatum.id];
                     const dport = lookup[flightDatum.destId];
                     
                     const margin = 4;
@@ -157,7 +165,7 @@ async function plotAirports() {
                                 .attr("x", 0).attr("y", 0)
                             text.append("tspan")
                                 .attr("x", 0).attr("dy", "1.0em")
-                                .text(`${airportDatum.code} → ${lookup[flightDatum.destId].code}`);
+                                .text(`${airportDatum.code} → ${dport.code}`);
                             
                             // draw label background
                             const {width, height} = label.node().getBBox();
@@ -192,14 +200,15 @@ async function plotAirports() {
             const airport = map.select(".airports").append("circle");
             airport
                 .attr("transform", `translate(${airportDatum.longpx},${airportDatum.latpx})`)
-                .attr("r", _d => 5)
-                .on("mouseover", function(_event, _data) {
+                .attr("fill", getColor(total_delays / total_flights))
+                .attr("r", 5)
+                .on("mouseover", function() {
                     setVisible(airportDatum.id, true);
                     if (selectedAirport === null) {
                         updateSidebar(airportDatum, lookup, conn_index);
                     }
                 })
-                .on("mouseout", function(_event, _data) {
+                .on("mouseout", function() {
                     if (selectedAirport !== airportDatum.id) {
                         setVisible(airportDatum.id, false);
                     }
