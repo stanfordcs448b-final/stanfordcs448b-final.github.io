@@ -51,7 +51,7 @@ let airportDOMIndex = {};
  * @param {boolean} value */
 function setVisible(id, value) {
     airportDOMIndex[id].connections
-        .attr("opacity", value ? 0.9 : 0.03)
+        .attr("opacity", value ? 1.0 : 0.03)
         .attr("stroke-width", value ? 3.0 : 1.5)
         .raise();
     airportDOMIndex[id].label
@@ -165,7 +165,7 @@ async function plotAirports() {
                     selectedAirport = airportDatum.id;
 
                     // Update sidebar
-                    sidebar.select("h2")
+                    sidebar.select("#airportname")
                         .text(airportDatum.dispName);
                     
                     let conn_data = conn_index[airportDatum.id];

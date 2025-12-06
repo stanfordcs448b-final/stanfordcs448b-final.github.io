@@ -156,9 +156,10 @@ rect {
   /* margin-right: 4px; */
 }
 
-.sidebar table {
+#routes table {
   user-select: none;
   -webkit-user-select: none;
+  /* font-size: 0.5em; */
 }
 
 .container3 {
