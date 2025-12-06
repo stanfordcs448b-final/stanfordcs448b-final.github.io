@@ -341,11 +341,11 @@ async function updateDataState() {
         }
     }
 
-    if(data_key === "dsOrigin") {
-        data = await destdata;
+    if(data_key === "dsDest") {
+        data = await origindata;
 
         // default value
-        title_text_span.text("origin airport");
+        title_text_span.text("destination airport");
         d3.select('#suggestionsInput').attr("value", "MDW");
         d3.select('#suggestions').selectChildren().remove();
         for(let row of data) {
@@ -370,7 +370,7 @@ async function initData() {
     month_dict = pivotDataset(await monthdata);
     time_dict = pivotDataset(await timedata);
     origin_dict = pivotDataset(await origindata);
-    dest_dict = pivotDataset(await destdata);
+    dest_dict = pivotDataset(await origindata);
     overall_dict = (await overalldata)[0];
 }
 
