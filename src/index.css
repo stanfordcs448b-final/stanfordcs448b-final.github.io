@@ -232,6 +232,11 @@ rect {
   stroke: yellow;
 }
 
+.airports circle[data-active="0"] {
+  fill: #343434;
+  opacity: 0.2;
+}
+
 .connections {
   fill: none;
   stroke: var(--color-dark);

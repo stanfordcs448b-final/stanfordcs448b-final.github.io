@@ -46,19 +46,33 @@ async function buildConnections() {
 }
 
 let selectedAirport = null;
-/** @type {Record<number, {connections: d3.Selection<SVGGElement, any, HTMLElement, any>, label: d3.Selection<SVGGElement, any, HTMLElement, any>}>} */
+/** @type {Record<number, {routes: d3.Selection<SVGGElement, any, HTMLElement, any>, label: d3.Selection<SVGGElement, any, HTMLElement, any>, dests: number[], destSelection: d3.Selection, airport: d3.Selection}>} */
 let airportDOMIndex = {};
 
 /**
  * @param {number} id 
  * @param {boolean} value */
-function setVisible(id, value) {
-    airportDOMIndex[id].connections
-        .attr("opacity", value ? 0.8 : 0.03)
+function setActive(id, value) {
+    airportDOMIndex[id].routes
+        .attr("opacity", value ? 0.65 : 0.03)
         .attr("stroke-width", value ? 4.0 : 1.5)
         .raise();
     airportDOMIndex[id].label
         .attr("visibility", value ? "visible" : "hidden");
+}
+
+function setSelected(id, value) {
+    if (value) {
+        d3.select(".airports").selectAll("circle")
+            .attr("data-active", 0);
+        airportDOMIndex[id].destSelection
+            .attr("data-active", 1);
+        airportDOMIndex[id].airport
+            .attr("data-active", 1);
+    } else {
+        d3.select(".airports").selectAll("circle")
+            .attr("data-active", 1);
+    }
 }
 
 /**
@@ -124,6 +138,7 @@ async function plotAirports() {
         buildConnections(),
     ]);
 
+    const airportElems = []
     // put a bunch of dummy elements in .d3cache that we will bind the data to.
     // we will use functions like .each to actually create the DOM elements we want
     d3.select("#container1 .d3cache").selectAll("p")
@@ -138,7 +153,7 @@ async function plotAirports() {
             routeEdges
                 .attr("opacity", 0.03)
                 .selectAll("path")
-                .data(dests)
+                .data(dests.sort((a, b) => a.delayfrac - b.delayfrac))
                 .join("path")
                 .each(function(flightDatum) {
                     // vars we need to reference multiple times
@@ -151,7 +166,7 @@ async function plotAirports() {
                     d3.select(this)
                         .attr("d",  // set route path
                             `M ${oport.longpx} ${oport.latpx} `
-                            + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 50}, `
+                            + `Q ${(oport.longpx + dport.longpx) / 2} ${(oport.latpx + dport.latpx) / 2 - 60}, `
                             + `${dport.longpx} ${dport.latpx}`
                         )
                         .attr("stroke", getColor(flightDatum.delayfrac))
@@ -192,40 +207,62 @@ async function plotAirports() {
             // text.append("tspan")
             //     .attr("x", 0).attr("dy", "1.2em")
             //     .text(ad.code);
-
-
-            airportDOMIndex[airportDatum.id] = {connections: routeEdges, label: airportLabel};
             
             // Airport dots
             const airport = map.select(".airports").append("circle");
             airport
                 .attr("transform", `translate(${airportDatum.longpx},${airportDatum.latpx})`)
                 .attr("fill", getColor(total_delays / total_flights))
+                .attr("data-active", 1)
                 .attr("r", 5)
                 .on("mouseover", function() {
-                    setVisible(airportDatum.id, true);
+                    setActive(airportDatum.id, true);
                     if (selectedAirport === null) {
                         updateSidebar(airportDatum, lookup, conn_index);
                     }
                 })
                 .on("mouseout", function() {
                     if (selectedAirport !== airportDatum.id) {
-                        setVisible(airportDatum.id, false);
+                        setActive(airportDatum.id, false);
                     }
                 })
                 .on("click", function() {
                     if (selectedAirport === airportDatum.id) {
                         selectedAirport = null;
+                        setSelected(selectedAirport, false)
                         return;
                     }
 
                     if (selectedAirport !== null) {
-                        setVisible(selectedAirport, false);
+                        setActive(selectedAirport, false);
                     }
                     selectedAirport = airportDatum.id;
+                    setSelected(selectedAirport, true)
                     updateSidebar(airportDatum, lookup, conn_index);
                 });
-        });
+            // airportElems.push(airport);
+
+            airportDOMIndex[airportDatum.id] = {
+                routes: routeEdges, 
+                label: airportLabel,
+                dests: dests.map(d => d.destId),
+                destSelection: null,
+                airport: airport,
+            };
+        })
+        // compute destination selection for each airport
+        .call(selection => Object.values(airportDOMIndex).forEach(airport => {
+            const indices = [];
+            selection.each((airportDatum, idx) => {
+                if (airport.dests.find(i => i == airportDatum.id)) {
+                    indices.push(idx)
+                }
+            });
+            airport.destSelection = d3.select(".airports")
+                .selectAll("circle")
+                .filter((_d, idx) => indices.find(i => i == idx));
+        }));
+    
     
     // add backgrounds to airport labels
     const margin = 4;
