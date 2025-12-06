@@ -165,7 +165,6 @@ rect {
 
 .sidebar #routes {
   overflow-y: auto;
-  height: 50%;
 }
 
 .sidebar .inlinebar {
@@ -178,7 +177,7 @@ rect {
 #routes table {
   user-select: none;
   -webkit-user-select: none;
-  /* font-size: 0.5em; */
+  font-size: 0.7em;
 }
 
 .container3 {
