@@ -2,12 +2,15 @@
   --color-dark: #252525;
   --color-light: #efeee9;
   --color-banner: #fafafa;
-  --color-primary: #1a8fe3;
+  
   --size-step-0: 1.13rem;
   --size-step-1: 1.5rem;
   --size-step-2: 2rem;
   --size-step-3: 2.66rem;
   --size-step-4: 3.55rem;
+  --deep-blue: rgb(74, 116, 180);
+  --deep-red: rgb(165, 0, 38);
+  --color-primary: var(--deep-blue);
 }
 
 .flow > * + * {
@@ -37,6 +40,16 @@ body {
 .article {
   max-width: 100ch;
   margin-inline: auto;
+}
+
+.emphasizedRed {
+  font-weight: 600;
+  color: var(--deep-red);
+}
+
+.emphasizedBlue {
+  font-weight: 600;
+  color: var(--deep-blue);
 }
 
 h1,
@@ -197,7 +210,7 @@ rect {
 }
 
 .airports {
-  fill: brown;
+  fill: var(--deep-red);
   fill-opacity: 0.5;
   stroke: var(--color-light);
   stroke-width: 0.5;
@@ -205,7 +218,7 @@ rect {
 }
 
 #factorName {
-  color: brown;
+  color: var(--deep-red);
 }
 
 .airports circle:hover {

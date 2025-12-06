@@ -79,7 +79,6 @@ async function drawGraph(newData) {
     if(data_key == "dsOrigin") {
         data_dict = origin_dict;
         if(suggestion in data_dict) {
-            console.log(suggestion);
             d3.select(".airportInTitle").text(suggestion);
             row_names.push(suggestion);
             let row = data_dict[suggestion];
@@ -154,7 +153,6 @@ async function drawGraph(newData) {
                 rows_to_graph.push(row)
             }
         }
-        console.log(rows_to_graph);
     }
     
     if(data_key == "dsTime") {
