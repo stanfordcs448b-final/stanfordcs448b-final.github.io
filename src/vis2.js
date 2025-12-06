@@ -7,24 +7,16 @@ const delaygraph = d3.select("#container2 #delaygraph");
 let x, y;
 const delays = d3.csv("../data/v2_delays.csv", row => {
     let tmp = 0;
+    let c;
     return {
         id: +row["OriginAirportID"],
-        cancelled: {val: +row["cancelled"], acc: tmp+=+row["cancelled"]},
-        carrier: {val: +row["carrier"], acc: tmp+=+row["carrier"]},
-        weather: {val: +row["weather"], acc: tmp+=+row["weather"]},
-        nas: {val: +row["nas"], acc: tmp+=+row["nas"]},
-        security: {val: +row["security"], acc: tmp+=+row["security"]},
-        late: {val: +row["late"], acc: tmp+=+row["late"]},
+        cancelled: { val: c = +row["cancelled"], acc: tmp += c },
+        carrier:   { val: c = +row["carrier"],   acc: tmp += c },
+        weather:   { val: c = +row["weather"],   acc: tmp += c },
+        nas:       { val: c = +row["nas"],       acc: tmp += c },
+        security:  { val: c = +row["security"],  acc: tmp += c },
+        late:      { val: c = +row["late"],      acc: tmp += c },
     }
-    // id: +row["OriginAirportID"],
-    // data: [
-    //     +row["cancelled"],
-    //     +row["carrier"],
-    //     +row["weather"],
-    //     +row["nas"],
-    //     +row["security"],
-    //     +row["late"],
-    // ]
 })
 
 
@@ -106,6 +98,37 @@ async function plotAirports() {
                 d3.select(this).attr("data-selected", 1)
             }
             drawGraphs();
+        })
+        .each(function(airportDatum) {
+            const offset = 12;
+            const airportLabel = map.select(".labels").append("g")
+                .attr("class", "hoverdata")
+                .attr("transform", `translate(${airportDatum.longpx + offset},${airportDatum.latpx - offset})`)
+                .attr("visibility", "hidden");
+            const text = airportLabel.append("text")
+                .attr("x", 0).attr("y", 0)
+            text.append("tspan")
+                .attr("x", 0).attr("dy", "1.0em")
+                .text(airportDatum.code);
+            
+            d3.select(this)
+                .on("mouseover", () => airportLabel.attr("visibility", "visible"))
+                .on("mouseout", () => airportLabel.attr("visibility", "hidden"));
+        });
+    
+    // add backgrounds to airport labels
+    const margin = 4;
+    map.select(".labels").selectAll("g")
+        .each(function() {
+            /** @type {d3.Selection<SVGGElement, any, HTMLElement, any>} */
+            // @ts-ignore
+            const label = d3.select(this);
+            const {width, height} = label.node().getBBox();
+            label.insert("rect", ":first-child")
+                .attr("x", -margin)
+                .attr("y", -margin)
+                .attr("width", width + 2 * margin)
+                .attr("height", height + 2 * margin)
         });
 }
 

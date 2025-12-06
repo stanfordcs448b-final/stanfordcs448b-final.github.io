@@ -242,7 +242,6 @@ async function plotAirports() {
                 });
             
             if (airportDatum.id === 13232) starterAirport = airport;
-            console.log(starterAirport?.node().click);
 
             airportDOMIndex[airportDatum.id] = {
                 routes: routeEdges, 
