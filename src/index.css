@@ -230,6 +230,6 @@ rect {
   stroke-width: 1.5;
 }
 .connections path:hover {
-  stroke-width: 5.0;
+  stroke-width: 6.0;
   opacity: 1.0;
 }
