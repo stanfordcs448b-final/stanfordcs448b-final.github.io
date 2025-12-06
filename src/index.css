@@ -191,10 +191,8 @@ rect {
 }
 
 .container3 {
-  display: flex; /* Makes the container a flex container */
-  gap: 10px; /* Adds space between the flex items */
-  /* Optional: align-items: center; for vertical alignment */
-  /* Optional: justify-content: space-around; for horizontal distribution */
+  display: flex;
+  gap: 10px;
 }
 
 .canvasDiv, .menuDiv {
@@ -226,7 +224,7 @@ rect {
   z-index: 80;
 }
 
-#factorName {
+#factorName, #factorName5 {
   color: var(--deep-red);
 }
 

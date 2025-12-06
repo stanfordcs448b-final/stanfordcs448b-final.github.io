@@ -149,7 +149,7 @@ async function drawGraph(newData) {
         .domain([0, 17])
         .range([marginLeft, width - marginRight]);
     
-    const colors = [redBlue(0.1), redBlue(0.8)];
+    const colors = [redBlue(0.05), redBlue(0.85)];
 
     let axis = d3.axisTop(xscale.copy().range([marginLeft, width - marginRight]));
     axis.ticks(6).tickFormat(function(d) { return d * 0.25 + " hrs"; });
@@ -170,16 +170,10 @@ async function drawGraph(newData) {
         const yscale = y_axis[i];
 
         let mean = 0;
+        let heights = [];
         for(let time_idx = 1; time_idx <= 16; time_idx++) {
-            const rgbString = colors[i];
             const h = yscale(row[time_idx] / row['delayed'])
-            const rect = canvas.append("rect")
-                .attr("class", "bottomHist")
-                .attr("x", xscale(time_idx))
-                .attr("width", (xscale(9) - xscale(8)) * 0.9)
-                .attr("y", height * 0.5 + (-i * h))
-                .attr("height", h)
-                .attr("fill", rgbString)
+            heights.push(height * 0.5 + (-i * h));
             mean += (row[time_idx] / row['delayed']) * time_idx;
         }
 
@@ -188,24 +182,59 @@ async function drawGraph(newData) {
         const bbox = g.node().getBBox();
         t.attr("x", xscale(0.5) -  bbox.width).attr("y", height * 0.5 + yscale(y_max * 0.33) * (i * -2 + 1));
 
-        canvas.append('line')
-            .attr("class", "bottomHist")
-            .attr("x1", xscale(mean))
-            .attr("y1", height * 0.5)
-            .attr("x2", xscale(mean))
-            .attr("y2", height * 0.5 + 150 * (i * -2 + 1))
-            .attr("stroke", redBlue([0.0, 1.0][i]))
-            .attr("stroke-width", 2)
-            .attr("stroke-dasharray", "8");
+        if(i == 0) {
+            canvas.append('line')
+                .attr("class", "bottomHist")
+                .attr("x1", xscale(mean))
+                .attr("y1", marginTop - 8)
+                .attr("x2", xscale(mean))
+                .attr("y2", height * 0.5 + 150 * (i * -2 + 1))
+                .attr("stroke", redBlue([0.0, 1.0][i]))
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "8");
+        }
+        else {
+            canvas.append('line')
+                .attr("class", "bottomHist")
+                .attr("x1", xscale(mean))
+                .attr("y1", height * 0.5)
+                .attr("x2", xscale(mean))
+                .attr("y2", height * 0.5 + 150 * (i * -2 + 1))
+                .attr("stroke", redBlue([0.0, 1.0][i]))
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "8");
 
-        canvas
-            .append('text')
-            .attr("class", "bottomHist")
-            .attr("text-anchor", "middle")
-            .attr("x", xscale(mean))
-            .attr("y", height * 0.5 + 160 * (i * -2 + 1) + 5)
-            .text('mean')
-            .attr("stroke", redBlue([0.0, 1.0][i]));
+            canvas.append('line')
+                .attr("class", "bottomHist")
+                .attr("x1", xscale(mean))
+                .attr("y1", marginTop - 8)
+                .attr("x2", xscale(mean))
+                .attr("y2", height * 0.5 + 170 * (i * -2 + 1))
+                .attr("stroke", redBlue([0.0, 1.0][i]))
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "8");
+        }
+
+        for(let time_idx = 1; time_idx <= 16; time_idx++) {
+            const rgbString = colors[i];
+            const h = yscale(row[time_idx] / row['delayed'])
+            canvas
+                .append('text')
+                .attr("class", "bottomHist")
+                .attr("text-anchor", "middle")
+                .attr("x", xscale(mean))
+                .attr("y", height * 0.5 + 160 * (i * -2 + 1) + 5)
+                .text('mean')
+                .attr("stroke", 'black');
+
+            const rect = canvas.append("rect")
+                .attr("class", "bottomHist")
+                .attr("x", xscale(time_idx))
+                .attr("width", (xscale(9) - xscale(8)) * 0.9)
+                .attr("y", heights[time_idx - 1])
+                .attr("height", h)
+                .attr("fill", rgbString)
+        }
     }
 
     let axis_g = canvas.append('g')
