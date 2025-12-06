@@ -9,6 +9,9 @@ import { plotBars5 } from "./vis5.js";
 setupMap(d3.select("#container1 #map #background"))
 .then(v1main);
 
+// vis2
+setupMap(d3.select("#container2 #map #background"))
+
 // vis3
 setupCanvas()
 .then(plotBars);

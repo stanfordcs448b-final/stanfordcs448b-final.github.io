@@ -67,7 +67,7 @@
             <br><br>
             The worst large airport for delays was Baltimore/Washington International (BWI) with a whopping <span class="emphasizedRed">29.4%</span> delay rate,
             followed closely by Dallas Fort Worth International (DFW) airport at <span class="emphasizedRed">28.8%</span>.
-            (For our purposes, we only count departure delays that take longer than 15 minutes).
+            (For our purposes, we only count flight cancellations and departure delays that take longer than 15 minutes).
             <br><br>
             If you’re planning around flight delays, other factors matter beyond your airport of origin.
             Consider destination airport. For instance, <span class="emphasizedRed">54.0%</span> of 2024’s flights from BWI to Oakland were delayed,
@@ -120,6 +120,15 @@
         </p>
     </div>
     <div id="container2">
+        <svg id="map" width="975" height="610" viewbox="0 0 975 610">
+            <g id="background"></g>
+            <g id="vis">
+                <g class="airports"></g>
+                <g class="labels"></g>
+            </g>
+        </svg>
+        <div class="d3cache" style="display: none;"></div>
+        <p class="Caption">Take a look at your own airport's delays!</p>
     </div>
     <div class="article">
         <br>

@@ -130,6 +130,7 @@ function updateSidebar(airportDatum, lookup, conn_index) {
 }
 
 
+let starterAirport;
 
 async function plotAirports() {
     // await our lookup table builds simultaneously
@@ -138,7 +139,6 @@ async function plotAirports() {
         buildConnections(),
     ]);
 
-    const airportElems = []
     // put a bunch of dummy elements in .d3cache that we will bind the data to.
     // we will use functions like .each to actually create the DOM elements we want
     d3.select("#container1 .d3cache").selectAll("p")
@@ -240,7 +240,9 @@ async function plotAirports() {
                     setSelected(selectedAirport, true)
                     updateSidebar(airportDatum, lookup, conn_index);
                 });
-            // airportElems.push(airport);
+            
+            if (airportDatum.id === 13232) starterAirport = airport;
+            console.log(starterAirport?.node().click);
 
             airportDOMIndex[airportDatum.id] = {
                 routes: routeEdges, 
@@ -280,7 +282,22 @@ async function plotAirports() {
         });
 }
 
+function attachBackgroundListener() {
+    map.select("#background")
+        .on("click", function() {
+            if (selectedAirport !== null) {
+                setActive(selectedAirport, false);
+                setSelected(selectedAirport, false);
+                selectedAirport = null;
+            }
+        })
+}
+
 
 export async function main() {
     return plotAirports()
+        .then(attachBackgroundListener)
+        .then(() => ["mouseover", "click"].forEach(
+            e => starterAirport.node().dispatchEvent(new Event(e))
+        ));
 }
