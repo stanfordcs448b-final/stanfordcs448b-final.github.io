@@ -1,4 +1,5 @@
 import { airportdata } from "./data.js";
+import { legend } from "./legend.js"
 
 
 const map = d3.select("#container2 #map");
@@ -25,17 +26,17 @@ const selectedAirports = new Set();
 const width = 975;
 const height = 240;
 const marginLeft = 40;
-const marginRight = 10;
+const marginRight = 120;
 const marginTop = 10;
 const marginBottom = 10;
 
 const delaygraphGroups = [
-    {key: "cancelled", color: d3.schemeObservable10[0]},
-    {key: "carrier", color: d3.schemeObservable10[1]},
-    {key: "weather", color: d3.schemeObservable10[2]},
-    {key: "nas", color: d3.schemeObservable10[3]},
-    {key: "security", color: d3.schemeObservable10[4]},
-    {key: "late", color: d3.schemeObservable10[5]},
+    {key: "cancelled", color: d3.schemeTableau10[0]},
+    {key: "carrier",   color: d3.schemeTableau10[1]},
+    {key: "weather",   color: d3.schemeTableau10[2]},
+    {key: "nas",       color: d3.schemeTableau10[3]},
+    {key: "security",  color: d3.schemeTableau10[4]},
+    {key: "late",      color: d3.schemeTableau10[5]},
 ]
 
 async function drawGraphs() {
@@ -43,13 +44,13 @@ async function drawGraphs() {
     const dls = (await delays)
         .filter(row => selectedAirports.has(row.id)) // airports we're interested in 
 
-        const x = d3.scaleBand()
+    const x = d3.scaleBand()
         .domain([...selectedAirports].map(id => ad.find(r => r.id === id).code))
         .range([marginLeft, width - marginRight])
         .padding(0.1);
     const y = d3.scaleLinear()
         .domain([0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)])
-        .rangeRound([height - marginBottom, marginTop]);
+        .range([height - marginBottom, marginTop]);
     
     delaygraph.selectAll("g")
         .data(delaygraphGroups)
@@ -65,6 +66,8 @@ async function drawGraphs() {
         .attr("y", d => y(d.cval.acc))
         .attr("height", d => y(0) - y(d.cval.val))
         .attr("width", x.bandwidth())
+        .append("title")
+        .text((d,i) => `${delaygraphGroups[i].key}: ${d.cval.val}`);
     
     // horizontal axis
     delaygraph.append("g")
@@ -77,6 +80,26 @@ async function drawGraphs() {
         .attr("transform", `translate(${marginLeft},0)`)
         .call(d3.axisLeft(y).ticks(null, "s"))
         // .call(g => g.selectAll(".domain").remove());
+    
+    // legend
+    map.select("#legend")
+        .selectAll("g")
+        .data(delaygraphGroups)
+        .join(enter => {
+            const group = enter.append("g")
+                .attr("transform", (_d,i) => `translate(0, ${24 * i})`);
+            group.append("circle")
+                .attr("fill", d => d.color)
+                .attr("r", 8)
+                .attr("cx", 0)
+                .attr("cy", 0)
+            group.append("text")
+                .text(d => d.key)
+                .attr("x", 24)
+                .attr("text-anchor", "left")
+                .style("alignment-baseline", "middle");
+            return group;
+        });
 }
 
 let starterAirport;
