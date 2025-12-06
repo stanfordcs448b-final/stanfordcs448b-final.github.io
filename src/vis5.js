@@ -225,7 +225,7 @@ async function drawGraph(newData) {
                 .attr("x", xscale(mean))
                 .attr("y", height * 0.5 + 160 * (i * -2 + 1) + 5)
                 .text('mean')
-                .attr("stroke", 'black');
+                .attr("fill", redBlue([0.0, 1.0][i]));
 
             const rect = canvas.append("rect")
                 .attr("class", "bottomHist")
