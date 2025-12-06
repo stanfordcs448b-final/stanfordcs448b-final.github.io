@@ -50,10 +50,15 @@ async function drawGraph(newData) {
     canvas.selectAll(".axis").remove();
 
     let suggestion = d3.select('#suggestionsInput5').property("value");
-    if(suggestion != "")
+    if(suggestion != "") {
         d3.select("#factorName5").text(suggestion);
-    if(suggestion == "MDW")
-        d3.select("#factorName5").text(suggestion);
+        if(data_key == "dsOrigin" || data_key == "dsDest")
+            d3.select("#factorName5").text("at " + suggestion);
+        if(data_key == "dsAirline")
+            d3.select("#factorName5").text("with " + suggestion);
+        if(data_key == "dsMonth" || data_key == "dsTime")
+            d3.select("#factorName5").text("in " + suggestion);
+    }
 
     let data_dict;
     let rows_to_graph = [];
@@ -345,7 +350,7 @@ async function updateDataState() {
         data = await destdata;
 
         // default value
-        title_text_span.text("at each destination airport");
+        title_text_span.text("at each origin airport");
         d3.select('#suggestionsInput5').attr("value", "MDW");
         d3.select('#suggestions5').selectChildren().remove();
         for(let row of data) {
