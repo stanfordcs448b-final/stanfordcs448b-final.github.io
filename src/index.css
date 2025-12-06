@@ -234,6 +234,8 @@ rect {
   stroke: yellow;
 }
 
+/* vis1 */
+
 .airports circle[data-active="0"] {
   fill: #343434;
   opacity: 0.2;
@@ -247,4 +249,11 @@ rect {
 .connections path:hover {
   stroke-width: 6.0;
   opacity: 1.0;
+}
+
+/* vis2 */
+.airports circle[data-selected="1"] {
+  r: 7px;
+  opacity: 1.0;
+  fill: #a94f4f;
 }

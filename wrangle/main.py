@@ -128,6 +128,61 @@ def main():
     # with pd.option_context('display.max_rows', None):
     #     print(df.dtypes)
 
+    ## VISUALIZATION 2
+    # for src, dst in ({"Cancelled", "cancelled", "CarrierDelay"})
+    v2_cancelled = (
+        flight_df
+        [flight_df["Cancelled"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="cancelled")
+    )
+    v2_carrier = (
+        flight_df
+        [flight_df["CarrierDelay"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="carrier")
+    )
+    v2_weather = (
+        flight_df
+        [flight_df["WeatherDelay"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="weather")
+    )
+    v2_nas = (
+        flight_df
+        [flight_df["NASDelay"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="nas")
+    )
+    v2_security = (
+        flight_df
+        [flight_df["SecurityDelay"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="security")
+    )
+    v2_late = (
+        flight_df
+        [flight_df["LateAircraftDelay"] == 1]
+        .groupby("OriginAirportID")
+        .size()
+        .to_frame(name="late")
+    )
+    v2_combined = (
+        v2_cancelled
+        .merge(v2_carrier, on=["OriginAirportID"], how="outer")
+        .merge(v2_weather, on=["OriginAirportID"], how="outer")
+        .merge(v2_nas, on=["OriginAirportID"], how="outer")
+        .merge(v2_security, on=["OriginAirportID"], how="outer")
+        .merge(v2_late, on=["OriginAirportID"], how="outer")
+        .reset_index()
+    )
+
+    v2_combined.to_csv(Path(__file__).parents[1] / "src/data/v2_delays.csv", index=False)
 
 
 if __name__ == "__main__":
