@@ -25,7 +25,7 @@ const selectedAirports = new Set();
 const width = 975;
 const height = 240;
 const marginLeft = 40;
-const marginRight = 120;
+const marginRight = 160;
 const marginTop = 10;
 const marginBottom = 10;
 
@@ -37,6 +37,15 @@ const delayGraphGroups = [
     {key: "late",      color: redBlue(0.65)},
     {key: "cancelled", color: redBlue(0.1)},
 ]
+
+const legendText = {
+    carrier: "Carrier",
+    weather: "Weather",
+    nas: "National Air System",
+    security: "Security",
+    late: "Late Plane",
+    cancelled: "Cancelled",
+};
 
 async function drawGraphs() {
     const ad = await airportdata;
@@ -58,7 +67,7 @@ async function drawGraphs() {
             : [0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)]
         )
         .range([height - marginBottom, marginTop]);
-    
+
     delaygraph.select("#bars")
         .selectAll("g")
         .data(delayGraphGroups.filter(g => includeCancellations || g.key !== "cancelled"))
@@ -84,20 +93,23 @@ async function drawGraphs() {
         .attr("height", d => y(0) - y(d.cval.val / d.total))
         .attr("width", x.bandwidth())
         .append("title")
-        .text(d => `${d.key}: ${doNormalize ? (d.cval.val / d.total).toFixed(1) : d.cval.val}${doNormalize ? "%" : ""}`);
-    
+        .text(d => `${legendText[d.key]}: ${doNormalize ? (d.cval.val / d.total).toFixed(1) : d.cval.val}${doNormalize ? "%" : ""}`);
+
+    const axes = delaygraph.select("#axes");
+    axes.selectAll("g").remove();
+
     // horizontal axis
-    delaygraph.append("g")
+    axes.append("g")
         .attr("transform", `translate(0,${height - marginBottom})`)
         .call(d3.axisBottom(x).tickSizeOuter(0))
         .call(g => g.selectAll(".domain").remove())
-    
+
     // vertical axis
-    delaygraph.append("g")
+    axes.append("g")
         .attr("transform", `translate(${marginLeft},0)`)
         .call(d3.axisLeft(y).ticks(null, "s"))
         // .call(g => g.selectAll(".domain").remove());
-    
+
     // legend
     map.select("#legend")
         .selectAll("g")
@@ -111,7 +123,7 @@ async function drawGraphs() {
                 .attr("cx", 0)
                 .attr("cy", 0)
             group.append("text")
-                .text(d => d.key)
+                .text(d => legendText[d.key])
                 .attr("x", 24)
                 .attr("text-anchor", "left")
                 .style("alignment-baseline", "middle");
