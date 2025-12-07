@@ -1,4 +1,5 @@
 import { airportdata } from "./data.js";
+import { redBlue } from "./util.js";
 
 
 const map = d3.select("#container2 #map");
@@ -29,12 +30,12 @@ const marginTop = 10;
 const marginBottom = 10;
 
 const delaygraphGroups = [
-    {key: "cancelled", color: d3.schemeTableau10[0]},
-    {key: "carrier",   color: d3.schemeTableau10[1]},
-    {key: "weather",   color: d3.schemeTableau10[2]},
-    {key: "nas",       color: d3.schemeTableau10[3]},
+    {key: "cancelled", color: redBlue(0.1)},
+    {key: "carrier",   color: redBlue(0.8)},
+    {key: "weather",   color: redBlue(0.9)},
+    {key: "nas",       color: redBlue(0.2)},
     {key: "security",  color: d3.schemeTableau10[4]},
-    {key: "late",      color: d3.schemeTableau10[5]},
+    {key: "late",      color: redBlue(0.65)},
 ]
 
 async function drawGraphs() {
