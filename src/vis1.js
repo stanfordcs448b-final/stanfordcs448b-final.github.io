@@ -86,6 +86,9 @@ function updateSidebar(airportDatum, lookup, conn_index) {
     sidebar.select("#airportname")
         .text(airportDatum.dispName);
 
+    d3.select(".airportInTitle")
+        .text(airportDatum.code);
+
     const { dests, total_delays, total_flights } = conn_index[airportDatum.id];
     sidebar.select("#summary")
         .text(`${total_delays} flights delayed of ${total_flights} total flights (${(100 * total_delays / total_flights).toFixed(1)})%`);
