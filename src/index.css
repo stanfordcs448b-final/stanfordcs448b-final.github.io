@@ -164,7 +164,7 @@ rect {
 }
 
 #container1 .sidebar {
-  background-color: var(--color-banner);
+  background-color: var(--color-light);
   float: inline-end;
   height: 100%;
   position: absolute;
