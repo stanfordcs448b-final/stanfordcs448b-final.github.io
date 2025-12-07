@@ -61,9 +61,9 @@ async function drawGraphs() {
         .join("g")
         .attr("fill", d => d.color)
         .selectAll("rect")
-        .data((_d, i) => dls.map(row => ({
+        .data((d, i) => dls.map(row => ({
             id: row.id, 
-            key: delaygraphGroups[i].key,
+            key: d.key,
             cval: row[delaygraphGroups[i].key],
             total: doNormalize ? 0.01 * (row.cancelled.val + row.carrier.val + row.late.val + row.nas.val + row.security.val + row.weather.val) : 1,
         })), d => d.id)
