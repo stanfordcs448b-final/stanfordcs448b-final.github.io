@@ -1,5 +1,5 @@
 import { 
-    origindata,
+    airportdata, origindata,
 } from "./data.js";
 
 import { 
@@ -21,6 +21,12 @@ const barSize = 10;
 
 let data;
 let data_dict;
+
+const airportLookup = airportdata
+    .then(data => data.reduce((acc, curr) => {
+        acc[curr.code] = curr.dispName;
+        return acc;
+    }, {}));
 
 async function drawGraph() {
     const barHeight = 20;
@@ -61,7 +67,8 @@ async function drawGraph() {
         .attr("stroke-width", 2.5)
         .attr("stroke-dasharray", "8");
 
-  // Add dots
+    const airports = await airportLookup;
+    // Add dots
     graphCanvas.append('g')
         .selectAll("dot")
         .data(data)
@@ -76,7 +83,8 @@ async function drawGraph() {
             const group = graphCanvas.append('g')
                 .attr('class', 'hoverdata');
             const text = group.append("text").attr("x", 0).attr("y", 0);         // add text element into group
-            text.append("tspan").attr("x", 0).attr("dy", "1.2em").text(d.key); // add text spans into text, with line spacing `dy`
+            text.append("tspan").attr("x", 0).attr("dy", "1.2em") // add text spans into text, with line spacing `dy`
+                .text(airports[d.key]); 
             const bbox = group.node().getBBox();
             let tooltip_x = xscale(d.total) + width * 0.5 - bbox.width * 0.5;
             if(tooltip_x < 0) tooltip_x = marginLeft;
