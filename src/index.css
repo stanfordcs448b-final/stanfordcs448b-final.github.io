@@ -113,7 +113,7 @@ a {
 img,
 picture,
 svg {
-  max-width: 100%;
+  max-width: 90%;
   display: block;
   background: var(--color-light);
  

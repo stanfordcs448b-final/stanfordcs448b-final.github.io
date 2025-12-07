@@ -1,4 +1,5 @@
 import { airportdata } from "./data.js";
+import { redBlue } from "./util.js";
 
 
 const map = d3.select("#container2 #map");
@@ -9,12 +10,12 @@ const delays = d3.csv("../data/v2_delays.csv", row => {
     let c;
     return {
         id: +row["OriginAirportID"],
-        cancelled: { val: c = +row["cancelled"], acc: tmp += c },
         carrier:   { val: c = +row["carrier"],   acc: tmp += c },
         weather:   { val: c = +row["weather"],   acc: tmp += c },
         nas:       { val: c = +row["nas"],       acc: tmp += c },
         security:  { val: c = +row["security"],  acc: tmp += c },
         late:      { val: c = +row["late"],      acc: tmp += c },
+        cancelled: { val: c = +row["cancelled"], acc: tmp += c },
     }
 })
 
@@ -28,7 +29,7 @@ const marginRight = 120;
 const marginTop = 10;
 const marginBottom = 10;
 
-const delaygraphGroups = [
+const delayGraphGroups = [
     {key: "cancelled", color: d3.schemeTableau10[0]},
     {key: "carrier",   color: d3.schemeTableau10[1]},
     {key: "weather",   color: d3.schemeTableau10[2]},
@@ -44,6 +45,8 @@ async function drawGraphs() {
 
     //@ts-expect-error
     const doNormalize = d3.select("#container2 #delayNormalize").node().checked;
+    //@ts-expect-error
+    const includeCancellations = d3.select("#container2 #includeCancellations").node().checked;
 
     const x = d3.scaleBand()
         .domain([...selectedAirports].map(id => ad.find(r => r.id === id).code))
@@ -56,16 +59,24 @@ async function drawGraphs() {
         )
         .range([height - marginBottom, marginTop]);
     
-    delaygraph.selectAll("g")
-        .data(delaygraphGroups)
+    delaygraph.select("#bars")
+        .selectAll("g")
+        .data(delayGraphGroups.filter(g => includeCancellations || g.key !== "cancelled"))
         .join("g")
         .attr("fill", d => d.color)
         .selectAll("rect")
-        .data((d, i) => dls.map(row => ({
+        .data(d => dls.map(row => ({
             id: row.id, 
             key: d.key,
-            cval: row[delaygraphGroups[i].key],
-            total: doNormalize ? 0.01 * (row.cancelled.val + row.carrier.val + row.late.val + row.nas.val + row.security.val + row.weather.val) : 1,
+            cval: row[d.key],
+            total: doNormalize ? 0.01 * (
+                (includeCancellations ? row.cancelled.val : 0) 
+                + row.carrier.val 
+                + row.late.val 
+                + row.nas.val 
+                + row.security.val 
+                + row.weather.val
+            ) : 1,
         })), d => d.id)
         .join("rect")
         .attr("x", d => x(ad.find(r => r.id === d.id).code))
@@ -73,7 +84,7 @@ async function drawGraphs() {
         .attr("height", d => y(0) - y(d.cval.val / d.total))
         .attr("width", x.bandwidth())
         .append("title")
-        .text((d,i) => `${d.key}: ${doNormalize ? (d.cval.val / d.total).toFixed(1) : d.cval.val}${doNormalize ? "%" : ""}`);
+        .text(d => `${d.key}: ${doNormalize ? (d.cval.val / d.total).toFixed(1) : d.cval.val}${doNormalize ? "%" : ""}`);
     
     // horizontal axis
     delaygraph.append("g")
@@ -90,7 +101,7 @@ async function drawGraphs() {
     // legend
     map.select("#legend")
         .selectAll("g")
-        .data(delaygraphGroups)
+        .data(delayGraphGroups)
         .join(enter => {
             const group = enter.append("g")
                 .attr("transform", (_d,i) => `translate(0, ${24 * i})`);
@@ -108,7 +119,7 @@ async function drawGraphs() {
         });
 }
 
-let starterAirport;
+let starterAirport = [];
 
 async function plotAirports() {
     map.select(".airports")
@@ -146,7 +157,9 @@ async function plotAirports() {
                 .on("mouseover", () => airportLabel.attr("visibility", "visible"))
                 .on("mouseout", () => airportLabel.attr("visibility", "hidden"));
             
-            if (airportDatum.id === 13232) starterAirport = d3.select(this);
+            if ([13232, 10821, 14771, 11637].includes(airportDatum.id)) {
+                starterAirport.push(d3.select(this));
+            }
         });
     
     // add backgrounds to airport labels
@@ -168,8 +181,9 @@ async function plotAirports() {
 
 export async function main() {
     return plotAirports().then(() => ["mouseover", "click"].forEach(
-            e => starterAirport.node().dispatchEvent(new Event(e))
+            e => starterAirport.forEach(a => a.node().dispatchEvent(new Event(e)))
         )).then(() => {
             d3.select("#container2 #delayNormalize").on("click", drawGraphs);
+            d3.select("#container2 #includeCancellations").on("click", drawGraphs);
         });
 }

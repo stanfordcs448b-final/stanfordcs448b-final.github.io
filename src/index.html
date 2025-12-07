@@ -206,12 +206,16 @@
                 <g class="airports"></g>
                 <g class="labels"></g>
             </g>
-            <g id="delaygraph" transform="translate(0,650)"></g>
+            <g id="delaygraph" transform="translate(0,650)">
+                <g id="bars"></g>
+            </g>
             <g id="legend" transform="translate(870,650)"></g>
         </svg>
         <div class="d3cache" style="display: none;"></div>
         <input type="checkbox" id="delayNormalize" checked/>
         <label for="delayNormalize" style="user-select: none; -webkit-user-select: none;">Normalize flight count</label>
+        <input type="checkbox" id="includeCancellations"/>
+        <label for="includeCancellations" style="user-select: none; -webkit-user-select: none;">Include cancelled flights</label>
         <p class="Caption">Different airports have delays for different reasons. Compare a few airports to get a sense for it!</p>
     </div>
     <div class="article">
