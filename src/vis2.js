@@ -5,7 +5,6 @@ import { legend } from "./legend.js"
 const map = d3.select("#container2 #map");
 const delaygraph = d3.select("#container2 #delaygraph");
 
-let x, y;
 const delays = d3.csv("../data/v2_delays.csv", row => {
     let tmp = 0;
     let c;
@@ -44,12 +43,18 @@ async function drawGraphs() {
     const dls = (await delays)
         .filter(row => selectedAirports.has(row.id)) // airports we're interested in 
 
+    //@ts-expect-error
+    const doNormalize = d3.select("#container2 #delayNormalize").node().checked;
+
     const x = d3.scaleBand()
         .domain([...selectedAirports].map(id => ad.find(r => r.id === id).code))
         .range([marginLeft, width - marginRight])
         .padding(0.1);
     const y = d3.scaleLinear()
-        .domain([0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)])
+        .domain(doNormalize 
+            ? [0, 100]
+            : [0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)]
+        )
         .range([height - marginBottom, marginTop]);
     
     delaygraph.selectAll("g")
@@ -59,15 +64,17 @@ async function drawGraphs() {
         .selectAll("rect")
         .data((_d, i) => dls.map(row => ({
             id: row.id, 
-            cval: row[delaygraphGroups[i].key], 
+            key: delaygraphGroups[i].key,
+            cval: row[delaygraphGroups[i].key],
+            total: doNormalize ? 0.01 * (row.cancelled.val + row.carrier.val + row.late.val + row.nas.val + row.security.val + row.weather.val) : 1,
         })), d => d.id)
         .join("rect")
         .attr("x", d => x(ad.find(r => r.id === d.id).code))
-        .attr("y", d => y(d.cval.acc))
-        .attr("height", d => y(0) - y(d.cval.val))
+        .attr("y", d => y(d.cval.acc / d.total))
+        .attr("height", d => y(0) - y(d.cval.val / d.total))
         .attr("width", x.bandwidth())
         .append("title")
-        .text((d,i) => `${delaygraphGroups[i].key}: ${d.cval.val}`);
+        .text((d,i) => `${d.key}: ${doNormalize ? (d.cval.val / d.total).toFixed(1) : d.cval.val}${doNormalize ? "%" : ""}`);
     
     // horizontal axis
     delaygraph.append("g")
@@ -163,5 +170,7 @@ async function plotAirports() {
 export async function main() {
     return plotAirports().then(() => ["mouseover", "click"].forEach(
             e => starterAirport.node().dispatchEvent(new Event(e))
-        ));
+        )).then(() => {
+            d3.select("#container2 #delayNormalize").on("click", drawGraphs);
+        });
 }
