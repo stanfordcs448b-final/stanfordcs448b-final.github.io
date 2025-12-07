@@ -89,7 +89,7 @@ async function drawGraphs() {
                 + row.security.val 
                 + row.weather.val
             ) : 1,
-        })), d => d.id)
+        })), d => `${d.id} ${d.total}`)
         .join("rect")
         .attr("x", d => x(ad.find(r => r.id === d.id).code))
         .attr("y", d => y(d.cval.acc / d.total))
