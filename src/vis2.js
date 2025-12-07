@@ -64,7 +64,10 @@ async function drawGraphs() {
     const y = d3.scaleLinear()
         .domain(doNormalize 
             ? [0, 100]
-            : [0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)]
+            : [0, dls.reduce((acc, curr) => {
+                    const last = includeCancellations ? curr.cancelled : curr.late;
+                    return Math.max(acc, last.acc + last.val);
+                }, 0)]
         )
         .range([height - marginBottom, marginTop]);
 
@@ -86,7 +89,7 @@ async function drawGraphs() {
                 + row.security.val 
                 + row.weather.val
             ) : 1,
-        })), d => d.id)
+        })), d => `${d.id} ${d.total}`)
         .join("rect")
         .attr("x", d => x(ad.find(r => r.id === d.id).code))
         .attr("y", d => y(d.cval.acc / d.total))
