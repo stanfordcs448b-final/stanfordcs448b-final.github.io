@@ -64,7 +64,10 @@ async function drawGraphs() {
     const y = d3.scaleLinear()
         .domain(doNormalize 
             ? [0, 100]
-            : [0, dls.reduce((acc, curr) => Math.max(acc, curr.late.acc + curr.late.val), 0)]
+            : [0, dls.reduce((acc, curr) => {
+                    const last = includeCancellations ? curr.cancelled : curr.late;
+                    return Math.max(acc, last.acc + last.val);
+                }, 0)]
         )
         .range([height - marginBottom, marginTop]);
 
