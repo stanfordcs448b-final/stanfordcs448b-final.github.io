@@ -1,6 +1,6 @@
 # CS 448B Final Project
 
-# See it live at [stanfordcs448b-final.github.io](stanfordcs448b-final.github.io)
+# See it live at [stanfordcs448b-final.github.io](https://stanfordcs448b-final.github.io)
 
 ## Getting set up
 
