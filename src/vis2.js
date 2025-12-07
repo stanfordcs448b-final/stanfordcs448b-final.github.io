@@ -1,5 +1,4 @@
 import { airportdata } from "./data.js";
-import { legend } from "./legend.js"
 
 
 const map = d3.select("#container2 #map");
