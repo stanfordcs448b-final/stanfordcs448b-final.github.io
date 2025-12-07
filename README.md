@@ -1,5 +1,7 @@
 # CS 448B Final Project
 
+# See it live at [stanfordcs448b-final.github.io](stanfordcs448b-final.github.io)
+
 ## Getting set up
 
 1. Make sure you have [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
